@@ -1,0 +1,14 @@
+
+.user_avatar1 {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.flex {
+    display: flex;
+    gap: 50px;
+    margin: 20px ;
+    margin-left: 150px;
+}
