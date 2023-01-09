@@ -35,25 +35,29 @@ nav {
 }
 
 .main {
-    height: 100vh;
     display: flex;
+    min-height: 100vh;
 }
 
 .col-2 {
     background-color:rgb(52,58,64);
     width: 16.67%;
-    height: 100%;
+    padding: 0;
 }
 
 ul {
-    padding: 15px;
     list-style: none;
 }
 
 ul li {
-    margin: 15px 0;
+    padding: 15px;
 }
 
+li:hover {
+    color: black;
+    transition: 0.25s;
+    background-color: white;
+}
 
 ul li a {
     color: white;
@@ -70,6 +74,7 @@ a:hover {
 .content {
     margin-left: 30px;
     margin-top: 15px;
+    width: 100%;
 }
 
 td img {
@@ -92,4 +97,25 @@ td span {
 
 .user {
     background-color: green;
+}
+
+.select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.number-of-product {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+select, input {
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.search {
+    margin-right: 15px;
 }

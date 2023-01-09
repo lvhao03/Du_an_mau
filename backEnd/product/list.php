@@ -16,11 +16,15 @@
 
 ?>
 <h2>Danh sách sản phẩm</h2>
-<form action="" method="POST">
-    <input type="text" name="name" class="form-control" placeholder="Nhập tên sản phẩm">
-    <br>
-    <button type='submit' class="btn btn-primary">Tìm kiếm</button>
-</form>
+<div class="select">
+    <div class="number-of-product">
+        <span>Số lượng sản phẩm hiển thị</span>
+        <select name="" id="">
+            <option value="5">5</option>
+        </select>
+    </div>
+    <input class="search" type="text" placeholder="Tìm kiếm">
+</div>
 <br>
 <table class="table table-hover">
     <thead>
@@ -55,3 +59,6 @@
     </tbody>
 </table>
 <?php echo '<a href="./admin.php?page=product&action=add" class="text-white btn btn-primary">Thêm mới</a>'?>
+<script>
+    
+</script>

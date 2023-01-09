@@ -14,7 +14,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </head>
 <body>
     <header>
@@ -31,20 +33,25 @@
         <div class="col-2">
             <ul>
                 <li>
-                    <i class="fas fa-home"></i>
-                    <a href="./admin.php?page=index">Trang chủ</a>
+                    <a href="./admin.php?page=index">
+                        <i class="fas fa-home"></i>
+                        Trang chủ</a>
                 </li>
                 <li>
-                    <i class="fas fa-list"></i>
-                    <a href="./admin.php?page=catergory&action=show">Danh mục</a>
+                    <a href="./admin.php?page=catergory&action=show">
+                        <i class="fas fa-list"></i>
+                        Danh mục</a>
                 </li>
                 <li>
-                    <i class="fas fa-tshirt"></i>
-                    <a href="./admin.php?page=product&action=show">Sản phẩm</a>
+                    <a href="./admin.php?page=product&action=show">
+                        <i class="fas fa-tshirt"></i>
+                        Sản phẩm
+                    </a>
                 </li>
                 <li>
-                    <i class="fas fa-user"></i>
-                    <a href="./admin.php?page=user&action=show&type=all">Người dùng</a>
+                    <a href="./admin.php?page=user&action=show&type=all">
+                        <i class="fas fa-user"></i>
+                        Người dùng</a>
                 </li>
             </ul>
         </div>
