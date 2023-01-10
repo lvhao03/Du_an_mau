@@ -12,7 +12,7 @@
         $sql = "INSERT INTO product(productName,price, des, catergoryID, imagePath) VALUES (?,?,?,?,?)";
         $stmt = $conn->prepare($sql);
         $stmt->execute(array($_POST['productName'], $_POST['price'], $_POST['des'], $catergoryID['id'] ,$filePath));
-        // header('Location: http://localhost:8080/PHP_1/assignment1/backEnd/admin.php?page=user&action=show');
+        // header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
     }
     
     function checkFile(){

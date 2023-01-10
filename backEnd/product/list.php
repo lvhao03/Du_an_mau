@@ -1,14 +1,14 @@
 <?php 
     include './db.php';
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $a = $conn->prepare('SELECT product.id , product.productName, product.price, product.des , catergory.catergoryName, product.imagePath FROM product JOIN catergory WHERE product.catergoryid = catergory.id AND product.productName like :name ');
+        $a = $conn->prepare('SELECT product.id , product.productName, product.price, product.des , catergory.catergoryName, product.imagePath FROM product JOIN catergory WHERE product.catergoryid = catergory.id AND product.productName like :name  LIMIT 5');
         $name = $_POST['name'].'%';
         $a->bindParam(':name', $name);
         $a->setFetchMode(PDO::FETCH_ASSOC);
         $a->execute();
         $result = $a->fetchAll();
     } else {
-        $a = $conn->prepare('SELECT product.id , product.productName, product.price, product.des , catergory.catergoryName, product.imagePath FROM product JOIN catergory WHERE product.catergoryid = catergory.id ');
+        $a = $conn->prepare('SELECT product.id , product.productName, product.price, product.des , catergory.catergoryName, product.imagePath FROM product JOIN catergory WHERE product.catergoryid = catergory.id LIMIT 5');
         $a->setFetchMode(PDO::FETCH_ASSOC);
         $a->execute();
         $result = $a->fetchAll();
@@ -19,11 +19,12 @@
 <div class="select">
     <div class="number-of-product">
         <span>Số lượng sản phẩm hiển thị</span>
-        <select name="" id="">
+        <select class="number-shown" name="" id="">
             <option value="5">5</option>
+            <option value="10">10</option>
         </select>
     </div>
-    <input class="search" type="text" placeholder="Tìm kiếm">
+    <input class="search" type="text" placeholder="Tìm kiếm theo tên sản phẩm">
 </div>
 <br>
 <table class="table table-hover">
@@ -42,23 +43,93 @@
         
         <?php 
             foreach ($result as $product){
-                echo '<tr>'.
-                        '<th scope="row">'. $product['id'] .'</th>'.
-                        '<td><img src="' .$product['imagePath'] .'" class="rounded">'.'</td>'.
-                        '<td>'. $product['productName'] .'</td>'.
-                        '<td>'. $product['catergoryName'] .'</td>'.
-                        '<td>'. $product['price'] .' đ</td>'.
-                        '<td>'. $product['des'] .'</td>'.
-                        '<td>'.
-                            '<a href="./admin.php?page=product&action=edit&id=' .$product['id']. '"'. 'class="text-white btn btn-primary">Chỉnh sửa</a>'.
-                            '<a href="./admin.php?page=product&action=delete&id=' .$product['id']. '"' .'class="text-white btn btn-danger">Xóa</a>'
-                        .'</td>'.
-                    '</tr>';
-            }
-        ?>
+                ?>
+                <tr>
+                    <th scope="row"><?php echo $product['id']?></th>
+                    <td><img src="<?php echo $product['imagePath'] ?>" class="rounded" alt=""></td>
+                    <td><?php echo $product['productName'] ?></td>
+                    <td><?php echo $product['catergoryName']?></td>
+                    <td><?php echo $product['price']?></td>
+                    <td><?php echo $product['des']?></td>
+                    <td>
+                        <a href="./admin.php?page=product&action=edit&id=<?php echo $product['id']?>"><i class="fa-solid fa-pen-to-square"></i></a> 
+                        <a href="./admin.php?page=product&action=delete&id=<?php echo $product['id']?>"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+        <?php }?>
     </tbody>
 </table>
 <?php echo '<a href="./admin.php?page=product&action=add" class="text-white btn btn-primary">Thêm mới</a>'?>
 <script>
-    
+      $(document).ready(function(){
+        let input = $(".number-shown");
+        let tbody = $('tbody');
+
+        // Giới hạn số lượng hiển thị
+        input.change(function(){
+            $.ajax({
+                url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
+                data: {
+                    number: input.val(),
+                    action: 'list_query_record',
+                    type: "product"
+                },
+                type: 'POST',
+                dataType: 'json',
+                success: function(result){
+                    let html = '';
+                    console.log(result['catergoryName']);
+                    $.each(result, (index , product) => {
+                        html += ` <tr>
+                                    <th scope="row"> ${product['id']}</th>
+                                    <td><img src="${product['imagePath']}" class="rounded" alt=""></td>
+                                    <td>${product['productName']}</td>
+                                    <td>${product['catergoryName']}</td>
+                                    <td>${product['price']}</td>
+                                    <td>${product['des']}</td>
+                                    <td>
+                                        <a href="./admin.php?page=product&action=edit&id=${product['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
+                                        <a href="./admin.php?page=product&action=delete&id=${product['id']}"><i class="fa-solid fa-trash"></i></a>
+                                    </td>
+                                </tr>`;
+                    })
+                    tbody.html(html);
+                }
+            })
+        })
+
+        let searchBar = $('.search');
+        console.log(searchBar);
+        searchBar.keyup(function(){
+            $.ajax({
+                url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
+                data: {
+                    keyWord: searchBar.val(),
+                    action: 'search_query',
+                    tableName: "product"
+                },
+                type: 'POST',
+                dataType: 'json',
+                success: function(result){
+                    let html = '';
+                    $.each(result, (index , product) => {
+                        html += ` <tr>
+                                    <th scope="row"> ${product['id']}</th>
+                                    <td><img src="${product['imagePath']}" class="rounded" alt=""></td>
+                                    <td>${product['productName']}</td>
+                                    <td>${product['catergoryName']}</td>
+                                    <td>${product['price']}</td>
+                                    <td>${product['des']}</td>
+                                    <td>
+                                        <a href="./admin.php?page=product&action=edit&id=${product['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
+                                        <a href="./admin.php?page=product&action=delete&id=${product['id']}"><i class="fa-solid fa-trash"></i></a>
+                                    </td>
+                                </tr>`;
+                    })
+                    tbody.html(html);
+                }
+            })
+        })
+    })
+        
 </script>

@@ -10,7 +10,7 @@
         if($a->execute()){
             echo 'Thêm thành công';
         };
-        header('Location: http://localhost:8080/PHP_1/assignment1/backEnd/admin.php?page=user&action=show');
+        header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
     } else {
         $a = $conn->prepare('SELECT * FROM user WHERE id= :id');
         $a->bindParam(':id', $_GET['id']);
@@ -35,7 +35,10 @@
     </div>
     <div class="form-group">
         <label for="role">Vai trò</label>
-        <input type="text" name='userRole' class="form-control" id="role" value="<?php echo $user['userRole']; ?>" placeholder="Nhập vai trò">
+        <select class="form-control" name="userRole" id="">
+            <option value="Khách hàng">Khách hàng</option>
+            <option value="admin">Admin</option>
+        </select>
     </div>
     <button type='submit' class="btn btn-primary">Chỉnh sửa</button>
     <a href="./admin.php?page=user&action=show" class="text-white btn btn-primary">Xem danh sách</a>

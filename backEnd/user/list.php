@@ -1,11 +1,11 @@
 <?php 
     include './db.php';
-    $user = $conn->query('SELECT * FROM user')->fetchAll();
+    $user = $conn->query('SELECT * FROM user LIMIT 5')->fetchAll();
 ?>
 <h2>Danh sách người dùng</h2>
 <div class="select">
     <div class="number-of-product">
-        <span>Số lượng sản phẩm hiển thị</span>
+        <span>Số lượng người dùng hiển thị</span>
         <select class="numberShown" name="" id="">
             <option value="5">5</option>
         </select>
@@ -47,5 +47,5 @@
 </table>
 <?php echo '<a href="./admin.php?page=user&action=add" class="text-white btn btn-primary">Thêm mới</a>'?>
 <script>
-    
+
 </script>

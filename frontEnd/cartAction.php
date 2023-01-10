@@ -18,11 +18,10 @@
         $stmt->execute([$_GET['id']]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!isCartExist()) {
+        if (!$_SESSION['cart']) {
             $_SESSION['cart'] = [];
         }
         array_push($_SESSION['cart'], $result);
-        print_r($_SESSION['cart']);
         header('Location: ./cart.php');
     }
 
@@ -31,12 +30,3 @@
         $_SESSION['cart'] = array_values($_SESSION['cart']);
         header('Location: ./cart.php');
     }
-
-    function isCartExist(){
-        if (isset($_SESSION['cart'])) {
-            return true;
-        }
-        return false;
-    }
-    
-   

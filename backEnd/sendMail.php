@@ -29,7 +29,7 @@
 
       $mail->send();
       echo 'Gửi mail thành công';
-      header('Location: http://localhost:8080/PHP_1/assignment1/backEnd/index.php');
+      header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/index.php');
   } catch (Exception $e) {
       echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
   }

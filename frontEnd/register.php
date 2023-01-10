@@ -44,7 +44,7 @@
             </form>
             <div class="card-section">
                 <p>Đã có tài khoản?</p>
-                <a href="http://localhost:8080/PHP_1/assignment1/frontEnd/login.php" class="link">Đăng nhập</a>
+                <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/login.php" class="link">Đăng nhập</a>
             </div>
         </div>
     </div>

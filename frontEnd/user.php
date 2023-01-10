@@ -1,7 +1,7 @@
 <?php 
     session_start();
     include '../backEnd/db.php';
-    $id = $_SESSION['id'];
+    $id = $_SESSION['user']['id'];
     $sql_1 = 'SELECT * FROM user WHERE id = ?';
     $stmt = $conn->prepare($sql_1);
     $stmt->execute(array($id));

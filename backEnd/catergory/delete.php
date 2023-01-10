@@ -3,4 +3,4 @@
   $a = $conn->prepare('DELETE FROM catergory WHERE catergory.id= :id');
   $a->bindParam(':id', $_GET['id']);
   $a->execute();
-  header('Location: http://localhost:8080/PHP_1/assignment1/backEnd/admin.php?page=catergory&action=show');
+  header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=catergory&action=show');

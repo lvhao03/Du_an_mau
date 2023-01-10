@@ -41,9 +41,9 @@
                         $sum = 0;
                         $index = 0;
                         foreach($_SESSION['cart'] as $product_detail){
-                            // if (!isset($_SESSION['cart'][$index])) {
-                            //     continue;
-                            // }
+                            if (!isset($_SESSION['cart'])) {
+                                continue;
+                            }
                             $sum +=  $product_detail['price'];
                         ?>
                         <div class="left-section">

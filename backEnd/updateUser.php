@@ -8,7 +8,7 @@
     $a = $a->execute(array($_POST['userName'],$_POST['email'],$imagePath, $id));
     $_SESSION['imagePath'] = $imagePath;
     $_SESSION["userName"] =  $_POST['userName'];
-    header('Location: http://localhost:8080/PHP_1/assignment1/frontEnd/user.php');
+    header('Location: http://localhost:8080/PHP_1/duAnMau/frontEnd/user.php');
     
     function checkFile(){
         $directory = 'upload/';

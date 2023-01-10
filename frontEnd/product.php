@@ -67,7 +67,7 @@
                 $catergory = $conn->query('SELECT * FROM catergory');
                 echo '<ul class="catergory">';
                 foreach($catergory as $n ){
-                    echo '<li><a href="http://localhost:8080/PHP_1/assignment1/frontEnd/product.php?catergory='.$n['id'].'">'.$n['catergoryName'].'</a></li>';
+                    echo '<li><a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/product.php?catergory='.$n['id'].'">'.$n['catergoryName'].'</a></li>';
                 }
                 echo '</ul>';
             ?>
@@ -107,7 +107,7 @@
                                 $result = $conn->query($sql)->fetchAll();
                             }
                             foreach($result as $product){
-                                $imagePath = 'http://localhost:8080/PHP_1/assignment1/backEnd/' .$product['imagePath'] ;
+                                $imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' .$product['imagePath'] ;
                                 $price = $product['price'] . ' đ';
                                 echo '<div class="col col-3 sm-2">'.'
                                             <div class="card">'.
@@ -152,7 +152,7 @@
             <?php 
                 $result = $conn->query('SELECT * FROM product LIMIT 4')->fetchAll();
                 foreach($result as $product){
-                    $imagePath = 'http://localhost:8080/PHP_1/assignment1/backEnd/' .$product['imagePath'] ;
+                    $imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' .$product['imagePath'] ;
                     $price = $product['price'] . ' đ';
                     echo '<div class="col col-3 sm-2">'.'
                                 <div class="card">'.

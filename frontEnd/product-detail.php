@@ -4,7 +4,7 @@
     $a = $conn->prepare('SELECT * from product WHERE id = ?');
     $a->execute([$_GET['id']]);
     $product = $a->fetch(PDO::FETCH_ASSOC);
-    $imagePath = 'http://localhost:8080/PHP_1/assignment1/backEnd/' .$product['imagePath'] ;
+    $imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' .$product['imagePath'] ;
     $price = $product['price'] . ' đ';
 ?>
 
@@ -145,7 +145,7 @@
                     $a->execute();
                     $result = $a->fetchAll();
                     foreach($result as $product){
-                        $imagePath = 'http://localhost:8080/PHP_1/assignment1/backEnd/' .$product['imagePath'] ;
+                        $imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' .$product['imagePath'] ;
                         $price = $product['price'] . ' đ';
                         echo '<div class="col col-3 sm-2">'.'
                                     <div class="card">'.
@@ -187,7 +187,7 @@
                 changeBackGroundButton(des);
                 subContentSection.css('flex-direction', 'row');
                 $.ajax({
-                    url: 'http://localhost:8080/PHP_1/assignment1/api/api.php',
+                    url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
                     data: {
                         action: 'show_product_detail'
                     },
@@ -204,7 +204,7 @@
                 subContentSection.css('flex-direction', 'column');
                 changeBackGroundButton(reviews);
                 $.ajax({
-                    url: 'http://localhost:8080/PHP_1/assignment1/api/api.php/?id=<?php echo $_GET['id']?>',
+                    url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php/?id=<?php echo $_GET['id']?>',
                     data: {
                         action: 'show_comment'
                     },
@@ -220,7 +220,7 @@
             $(document).on('click', '.send-comment', function(){
                 let commentContent = $('.comment-content');
                 $.ajax({
-                    url: 'http://localhost:8080/PHP_1/assignment1/api/api.php/?id=<?php echo $_GET['id']?>',
+                    url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php/?id=<?php echo $_GET['id']?>',
                     data: {
                         action: 'send_comment',
                         content: commentContent.val()

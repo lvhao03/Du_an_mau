@@ -7,7 +7,7 @@
         $a->bindParam(':email',$_POST['email']);
         $a->bindParam(':role', $_POST['userRole']);
         $a->execute();
-        header('Location: http://localhost:8080/PHP_1/assignment1/backEnd/admin.php?page=user&action=show');
+        header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
     }
 ?>
 

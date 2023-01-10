@@ -3,6 +3,7 @@
     include '../backEnd/db.php';
     $action = $_POST['action'];
     switch($action){
+        // Phần frontEnd
         case 'live_search':
             live_search($_POST['keyWord']);
             break;
@@ -15,6 +16,18 @@
         case 'send_comment':
             send_comment();
             break;
+        case 'filter_product':
+            filter_product();
+            break;
+
+        // Phần backEnd
+        case 'list_query_record':
+            list_query_record($_POST['type'], $_POST['number']);
+            break;
+        case 'search_query':
+            search_query($_POST['tableName'], $_POST['keyWord']);
+            break;
+
     }
 
     function live_search($keyWord){
@@ -70,5 +83,27 @@
         $sql = 'SELECT * FROM comment JOIN user ON comment.userID = user.id AND productID = ? ';
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id]);
+        echo json_encode($stmt->fetchAll());
+    }
+
+    function filter_product(){
+        global $conn;
+    }
+
+    // Phần backEnd
+    function list_query_record($type, $number){
+        global $conn;
+        $sql = 'SELECT * FROM '. $type . ' LIMIT ' . $number;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        echo json_encode($stmt->fetchAll());
+    }
+
+    function search_query($tableName, $keyWord){
+        global $conn;
+        $param = "%" .$keyWord."%";
+        $sql = 'SELECT * FROM ' . $tableName .' WHERE ' . $tableName . 'Name like ? LIMIT 5';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$param]);
         echo json_encode($stmt->fetchAll());
     }

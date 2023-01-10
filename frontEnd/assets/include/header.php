@@ -3,8 +3,8 @@
         <i class="fas fa-bars destop-hide"></i>
         <img class='Logo' src="./assets/Capture 4.PNG" alt="">
         <ul class="nav-links mobile-hide">
-            <li><a href="http://localhost:8080/PHP_1/assignment1/frontEnd/index.php">Trang chủ</a></li>
-            <li><a href="http://localhost:8080/PHP_1/assignment1/frontEnd/product.php?page=1">Sản phẩm</a></li>
+            <li><a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/index.php">Trang chủ</a></li>
+            <li><a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/product.php?page=1">Sản phẩm</a></li>
             <li>
                 <a href="">Về chúng tôi</a>
                 <i class="fas fa-chevron-down"></i>
@@ -26,16 +26,16 @@
                         echo '<img class="user_avatar" src="../backEnd/'. $_SESSION['user']['imagePath'] .'">';
                         echo '<a class="dio" href="" >xin chào, ' . $_SESSION['user']['userName'] . '</a>';
                         echo '<div class="user-list">
-                                <a href="http://localhost:8080/PHP_1/assignment1/frontEnd/user.php">Thông tin cá nhân</a>
-                                <a href="http://localhost:8080/PHP_1/assignment1/backEnd/signOut.php">Đăng xuất</a>
+                                <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/user.php">Thông tin cá nhân</a>
+                                <a href="http://localhost:8080/PHP_1/duAnMau/backEnd/signOut.php">Đăng xuất</a>
                               </div>';
                     } else {
                         echo '<div class="user-icon" href="">
                                   <i class="far fa-user"></i>
                               </div>';
                         echo '<div class="user-list">
-                                  <a href="http://localhost:8080/PHP_1/assignment1/frontEnd/login.php">Đăng nhập</a>
-                                  <a href="http://localhost:8080/PHP_1/assignment1/frontEnd/register.php">Đăng ký</a>
+                                  <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/login.php">Đăng nhập</a>
+                                  <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/register.php">Đăng ký</a>
                               </div>';
                     }
                 ?>
@@ -60,7 +60,7 @@
         let input = $(".search-product");
         input.keyup(function(){
             $.ajax({
-                url: 'http://localhost:8080/PHP_1/assignment1/api/api.php',
+                url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
                 data: {
                     keyWord: input.val(),
                     action: 'live_search'
@@ -71,9 +71,9 @@
                     let html = "";
                     if (result.length > 0){
                         $.each(result, (index , item) => {
-                            let imagePath = 'http://localhost:8080/PHP_1/assignment1/backEnd/' + item['imagePath'];
+                            let imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' + item['imagePath'];
                             html += `<li>
-                                        <a href="http://localhost:8080/PHP_1/assignment1/frontEnd/product-detail.php?id=${item['id']}">
+                                        <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/product-detail.php?id=${item['id']}">
                                         <div class='search'>
                                             <img class="img-search" src=${imagePath}>
                                             <span>${item['productName']}</span>
