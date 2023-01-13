@@ -30,7 +30,7 @@
     <div class="main">
         <?php 
             echo '<a class="bread" href="./index.php">Trang chủ</a>>';
-            echo '<a class="bread" href="./product.php">Sản phẩm</a>>';
+            echo '<a class="bread" href="./product.php?page=1">Sản phẩm</a>>';
             echo '<a class="bread" href="">'.$product['productName'].'</a>';
         ?>
         <div class="product-main">
@@ -104,7 +104,7 @@
                 </div>
                 <div class="sub-content">
                     <div class="left">
-                        <h2>Information</h2>
+                        <h2>Thông số</h2>
                         <div class="left-content">
                             <div class="left-section">
                                 <h3>Mã sản phẩm</h3>

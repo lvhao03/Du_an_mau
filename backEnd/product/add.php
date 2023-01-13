@@ -1,10 +1,9 @@
 <?php 
     include './db.php';
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $b = $conn->prepare('SELECT * FROM catergory WHERE catergoryName = :name');
-        $b->bindParam(':name', $_POST['catergoryName']);
+        $b = $conn->prepare('SELECT * FROM catergory WHERE catergoryName = ?');
         $b->setFetchMode(PDO::FETCH_ASSOC);
-        $b->execute();
+        $b->execute([$_POST['catergoryName']]);
         $catergoryID = $b->fetch();
 
         $filePath = checkFile();

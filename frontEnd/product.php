@@ -61,16 +61,21 @@
                     <div class="btn">Filter</div>
                 </a>
             </div> -->
-            <h2>Danh mục</h2>
+            <h2>Bộ lọc tìm kiếm</h2>
+            <p>Theo danh mục</p>
             <?php 
                 include '../backEnd/db.php';
-                $catergory = $conn->query('SELECT * FROM catergory');
+                $catergoryList = $conn->query('SELECT * FROM catergory');
                 echo '<ul class="catergory">';
-                foreach($catergory as $n ){
-                    echo '<li><a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/product.php?catergory='.$n['id'].'">'.$n['catergoryName'].'</a></li>';
-                }
-                echo '</ul>';
+                foreach($catergoryList as $n ){
             ?>
+                    <div class="checkbox-control">
+                        <input value="<?php echo $n['catergoryName']?>" name="catergory[]" type="checkbox" id="<?php echo $n['catergoryName']?>">
+                        <label for="<?php echo $n['catergoryName']?>"><?php echo $n['catergoryName']?></label>
+                    </div>
+            <?php }?>
+            </ul>
+            <hr>
         </div>
         <div class="col col-9 sm-4">
             <div class="product">
@@ -86,26 +91,18 @@
                         <a href="">
                             <button class="btn-header">Mới nhất</button>
                         </a>
-                    </div>
-                    <div class="product-header-right">
-                        <i class="fas fa-chevron-left"></i>
-                        <p>1/25</p>
-                        <i class="fas fa-chevron-right"></i>
+                        <select class="select-price btn-header" name="" id="">
+                            <option selected="selected" value="asc">Giá thấp đến cao</option>
+                            <option value="desc">Giá cao đến thấp</option>
+                        </select>
                     </div>
                 </div>
                 <div class="product-content">
                     <div class="row">
                         <?php 
-                            if (isset($_GET['catergory'])){
-                                $sql = 'SELECT * FROM product WHERE catergoryID=' . $_GET['catergory'];
-                                $a = $conn->prepare($sql);
-                                $a->execute();
-                                $result = $a->fetchAll();
-                            } else {
-                                $offset = ($_GET['page'] - 1) * 6;
-                                $sql = 'SELECT * FROM product LIMIT 6 OFFSET '. $offset;
-                                $result = $conn->query($sql)->fetchAll();
-                            }
+                            $offset = ($_GET['page'] - 1) * 6;
+                            $sql = 'SELECT * FROM product ORDER BY price asc LIMIT 6 OFFSET '. $offset;
+                            $result = $conn->query($sql)->fetchAll();
                             foreach($result as $product){
                                 $imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' .$product['imagePath'] ;
                                 $price = $product['price'] . ' đ';
@@ -181,5 +178,108 @@
     </div>
     <script src='./assets/javascript/numberProduct.js'></script>
     <?php include 'assets/include/footer.php'?>
+    <script>
+        $(document).ready(function(){
+            let selectPrice = $('.select-price');
+            let row = $('.row');
+            let pagination = $('.pagination');
+            let checkBoxCatergory = $('input[name="catergory[]"]');
+            console.log(checkBoxCatergory);
+
+            selectPrice.change(function(){
+                $.ajax({
+                    url: '../api/api.php',
+                    data: {
+                        data: selectPrice.val(),
+                        action: 'filter_product_price'
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(result){
+                        let html = '';
+                        if (result.length > 0){
+                            $.each(result , (index, product) => {
+                                html += `<div class="col col-3 sm-2">
+                                            <div class="card">
+                                                <img src="http://localhost:8080/PHP_1/duAnMau/backEnd/${product['imagePath']}" alt="">
+                                                <h2 class="product-title">${product['productName']}</h2>
+                                                <div class="product-words">
+                                                    <p class="product-des">${product['des']}</p>
+                                                    <p class="product-price">${product['price']}</p>
+                                                </div>
+                                                <div class="stars">
+                                                    <span class="fa fa-star checked"></span>
+                                                    <span class="fa fa-star checked"></span>
+                                                    <span class="fa fa-star checked"></span>
+                                                    <span class="fa fa-star not-checked"></span>
+                                                    <span class="fa fa-star not-checked"></span>
+                                                </div>
+                                                <a href="./product-detail.php?id=${product['id']}" class="btn-link">
+                                                    <button class="btn">Mua ngay</button>
+                                                </a>
+                                            </div>
+                                    </div>`;
+                            })
+                            row.html(html);
+                            pagination.html(createPagination(result.length));
+                        }
+                    }
+                })
+            })
+
+            checkBoxCatergory.click(function(){
+                let array = [];
+                $.each($('input[name="catergory[]"]:checked'), function(){
+                  array.push($(this).val());
+                });
+
+                $.ajax({
+                    url: '../api/api.php',
+                    data: {
+                        data: array,
+                        action: 'filter_product_catergory_frontEnd'
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(result){
+                        let html = '';
+                        if (result.length > 0){
+                            $.each(result , (index, product) => {
+                                html += `<div class="col col-3 sm-2">
+                                            <div class="card">
+                                                <img src="http://localhost:8080/PHP_1/duAnMau/backEnd/${product['imagePath']}" alt="">
+                                                <h2 class="product-title">${product['productName']}</h2>
+                                                <div class="product-words">
+                                                    <p class="product-des">${product['des']}</p>
+                                                    <p class="product-price">${product['price']}</p>
+                                                </div>
+                                                <div class="stars">
+                                                    <span class="fa fa-star checked"></span>
+                                                    <span class="fa fa-star checked"></span>
+                                                    <span class="fa fa-star checked"></span>
+                                                    <span class="fa fa-star not-checked"></span>
+                                                    <span class="fa fa-star not-checked"></span>
+                                                </div>
+                                                <a href="./product-detail.php?id=${product['id']}" class="btn-link">
+                                                    <button class="btn">Mua ngay</button>
+                                                </a>
+                                            </div>
+                                    </div>`;
+                            })
+                            row.html(html);
+                        }
+                    }
+                })
+            })
+        });      
+
+        function createPagination(quantityOfProduct){
+            let html = '';
+            for(let i = 1 ; i <= ceil(quantityOfProduct/6) ; i++){
+                html += `<a href="./product.php?page=${i}">${i}</a>`;
+            }
+            return html;
+        }
+    </script>
 </body>
 </html>

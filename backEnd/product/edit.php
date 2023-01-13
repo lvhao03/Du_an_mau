@@ -35,6 +35,7 @@
 
 ?>
 <h2>Chỉnh sửa sản phẩm</h2>
+<img class="product-img" src="<?php echo $product['imagePath']?>" alt="">
 <form class="form" method="POST" enctype="multipart/form-data">
     <div class="form-group">
         <label for="userName">Tên sản phẩm</label>

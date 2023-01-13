@@ -1,12 +1,8 @@
 <?php 
     include './db.php';
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $a = $conn->prepare("INSERT INTO user(userName,email, passWord, userRole) VALUES (:name, :email, :pass, :role)");
-        $a->bindParam(':name',  $_POST['userName']);
-        $a->bindParam(':pass', $_POST['passWord']);
-        $a->bindParam(':email',$_POST['email']);
-        $a->bindParam(':role', $_POST['userRole']);
-        $a->execute();
+        $stmt = $conn->prepare("INSERT INTO user(userName,email, passWord, userRole) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$_POST['userName'],$_POST['email']],$_POST['passWord'], $_POST['userRole']);
         header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
     }
 ?>

@@ -25,12 +25,10 @@
 
     function getUser($user_name, $user_password){
         global $conn;
-        $a = $conn->prepare('SELECT * FROM user WHERE userName = :name AND passWord = :password');
-        $a->bindParam(':name', $user_name);
-        $a->bindParam(':password', $user_password);
-        $a->setFetchMode(PDO::FETCH_ASSOC);
-        $a->execute();
-        $user = $a->fetch();
+        $stmt = $conn->prepare('SELECT * FROM user WHERE userName = ? AND passWord = ?');
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute([$user_name,$user_password]);
+        $user = $stmt->fetch();
         $conn = null;
         return $user;
     }

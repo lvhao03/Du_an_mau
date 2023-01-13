@@ -18,10 +18,18 @@
 <h2>Danh sách sản phẩm</h2>
 <div class="select">
     <div class="number-of-product">
-        <span>Số lượng sản phẩm hiển thị</span>
-        <select class="number-shown" name="" id="">
-            <option value="5">5</option>
-            <option value="10">10</option>
+        <span>Lọc theo danh mục sản phẩm</span>
+        <select class="filter-product" name="" id="">
+            <option value="0">Tất cả</option>
+            <?php 
+                $sql = 'SELECT * FROM catergory';
+                $catergoryList = $conn->query('SELECT * FROM catergory')->fetchAll();
+                foreach($catergoryList as $catergory) {
+            ?>
+                <option value="<?php echo $catergory['id']?>"><?php echo $catergory['catergoryName']?></option>
+            <?php }?>
+            <!-- <option value="5">5</option>
+            <option value="10">10</option> -->
         </select>
     </div>
     <input class="search" type="text" placeholder="Tìm kiếm theo tên sản phẩm">
@@ -62,23 +70,22 @@
 <?php echo '<a href="./admin.php?page=product&action=add" class="text-white btn btn-primary">Thêm mới</a>'?>
 <script>
       $(document).ready(function(){
-        let input = $(".number-shown");
+        let filterBar = $(".filter-product");
         let tbody = $('tbody');
 
         // Giới hạn số lượng hiển thị
-        input.change(function(){
+        filterBar.change(function(){
             $.ajax({
                 url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
                 data: {
-                    number: input.val(),
-                    action: 'list_query_record',
-                    type: "product"
+                    catergoryID: filterBar.val(),
+                    action: 'filter_product_catergory_backEnd'
                 },
                 type: 'POST',
                 dataType: 'json',
                 success: function(result){
                     let html = '';
-                    console.log(result['catergoryName']);
+                    console.log(result);
                     $.each(result, (index , product) => {
                         html += ` <tr>
                                     <th scope="row"> ${product['id']}</th>
@@ -99,7 +106,6 @@
         })
 
         let searchBar = $('.search');
-        console.log(searchBar);
         searchBar.keyup(function(){
             $.ajax({
                 url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',

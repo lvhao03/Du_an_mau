@@ -1,16 +1,22 @@
 <?php 
     include './db.php';
-    $userList = $conn->query('SELECT * FROM user LIMIT 5')->fetchAll();
+    $user = $conn->query('SELECT * FROM user LIMIT 5')->fetchAll();
 ?>
-<h2>Danh sách người dùng</h2>
+<h2>Danh sách hóa đơn</h2>
 <div class="select">
-    <div>
-        <span>Lọc theo</span>
-        <select class="filter-user-role" name="" id="">
-            <option value="0">Tất cả</option>
-            <option value="admin">Admin</option>
-            <option value="Khách hàng">Khách hàng</option>
-        </select>
+    <div class="status-list">
+        <!-- <select class="numberShown" name="" id="">
+            <option value="5">5</option>
+            <option value="10">10</option>
+        </select> -->
+        <input name= "status" type="radio" id="all">
+        <label for="all">Tất cả</label> 
+        <input name= "status" type="radio" id="waiting">
+        <label for="waiting">Chờ xác nhận</label> 
+        <input name= "status" type="radio" id="ship">
+        <label for="ship">Đang vận chuyển</label> 
+        <input name= "status" type="radio" id="done">
+        <label for="done">Hoàn thành</label> 
     </div>
     <input class="search" type="text" placeholder="Tìm kiếm">
 </div>
@@ -27,7 +33,7 @@
     </thead>
     <tbody>
         <?php 
-            foreach ($userList as $n){
+            foreach ($user as $n){
                 if ($n['userRole'] == 'admin') {
                     $td = '<td><span class="admin">'. $n['userRole'] .'</span></td>';
                 } else {
@@ -47,39 +53,36 @@
         <?php   } ;?>   
     </tbody>
 </table>
-<?php echo '<a href="./admin.php?page=user&action=add" class="text-white btn btn-primary">Thêm mới</a>'?>
 <script>
       $(document).ready(function(){
-        let filterBar = $(".filter-user-role");
+        let input = $(".number-shown");
         let tbody = $('tbody');
 
-        // Lọc theo admin, khách hàng
-        filterBar.change(function(){
+        // Giới hạn số lượng hiển thị
+        input.change(function(){
             $.ajax({
                 url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
                 data: {
-                    userRole: filterBar.val(),
-                    action: 'filter_user_role',
+                    number: input.val(),
+                    action: 'list_query_record',
+                    type: "product"
                 },
                 type: 'POST',
                 dataType: 'json',
                 success: function(result){
                     let html = '';
-                    let td = '';
-                    $.each(result, (index , user) => {
-                        if (user['userRole'] == 'admin') {
-                            td = `<td><span class="admin">${user['userRole']}</span></td>`;
-                        } else {
-                            td = `<td><span class="user">${user['userRole']}</span></td>`;
-                        }
+                    console.log(result['catergoryName']);
+                    $.each(result, (index , product) => {
                         html += ` <tr>
-                                    <th scope="row"> ${user['id']}</th>
-                                    <td>${user['userName']}</td>
-                                    <td>${user['email']}</td>
-                                    ${td}
+                                    <th scope="row"> ${product['id']}</th>
+                                    <td><img src="${product['imagePath']}" class="rounded" alt=""></td>
+                                    <td>${product['productName']}</td>
+                                    <td>${product['catergoryName']}</td>
+                                    <td>${product['price']}</td>
+                                    <td>${product['des']}</td>
                                     <td>
-                                        <a href="./admin.php?page=user&action=edit&id=${user['id']}"><i class="fa-solid fa-pen-to-square"></i></a>
-                                        <a href="./admin.php?page=user&action=delete&id=${user['id']}"><i class="fa-solid fa-trash"></i></a>
+                                        <a href="./admin.php?page=product&action=edit&id=${product['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
+                                        <a href="./admin.php?page=product&action=delete&id=${product['id']}"><i class="fa-solid fa-trash"></i></a>
                                     </td>
                                 </tr>`;
                     })
@@ -88,7 +91,6 @@
             })
         })
 
-        // Tìm kiwsm
         let searchBar = $('.search');
         searchBar.keyup(function(){
             $.ajax({
@@ -125,5 +127,4 @@
             })
         })
     })
-        
 </script>

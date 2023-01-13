@@ -1,22 +1,14 @@
 <?php 
     include './db.php';
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $a = $conn->prepare('UPDATE user SET userName=:name, email=:email, passWord=:pass, userRole=:role WHERE user.id= :id');
-        $a->bindParam(':id', $_GET['id']);
-        $a->bindParam(':name', $_POST['userName']);
-        $a->bindParam(':pass', $_POST['passWord']);
-        $a->bindParam(':email', $_POST['email']);
-        $a->bindParam(':role', $_POST['userRole']);
-        if($a->execute()){
-            echo 'Thêm thành công';
-        };
+        $stmt = $conn->prepare('UPDATE user SET userName=?, email=?, passWord=?, userRole=? WHERE user.id= ?');
+        $stmt->execute([$_POST['userName'],$_POST['email'],$_POST['passWord'], $_POST['userRole'],$_GET['id']]);
         header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
     } else {
-        $a = $conn->prepare('SELECT * FROM user WHERE id= :id');
-        $a->bindParam(':id', $_GET['id']);
-        $a->setFetchMode(PDO::FETCH_ASSOC);
-        $a->execute();
-        $user = $a->fetch();
+        $stmt = $conn->prepare('SELECT * FROM user WHERE id= ?');
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute([$_GET['id']]);
+        $user = $stmt->fetch();
     }
 ?>
 <h2>Chỉnh sửa người dùng</h2>

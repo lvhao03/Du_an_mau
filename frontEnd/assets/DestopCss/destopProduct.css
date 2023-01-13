@@ -304,3 +304,13 @@ hr {
     cursor: pointer;
     background-color: #3BEC8C;
 }
+
+.checkbox-control {
+    display: flex;
+    gap: 10px;
+    padding: 15px 0;
+}
+
+label:hover {
+    cursor: pointer;
+}

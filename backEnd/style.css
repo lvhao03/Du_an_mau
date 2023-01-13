@@ -128,3 +128,19 @@ select, input {
     height: 45px;
     border-radius: 50%;
 }
+
+.product-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+}
+
+label {
+    margin-bottom: 0;
+}
+
+.status-list {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

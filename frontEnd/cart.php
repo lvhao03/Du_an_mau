@@ -89,7 +89,7 @@
                         <p>Tổng tiền</p>
                         <p class="right-money"><?php echo $sum . 'đ' ?></p>
                     </div>
-                    <a href="">
+                    <a href="./checkout.php">
                         <button class="btn">Thanh toán</button>
                     </a>
                 </div>
