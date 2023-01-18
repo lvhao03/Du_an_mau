@@ -21,7 +21,7 @@
 <body>
     <header>
         <nav>
-            <h2>Trang admin</h2>
+            <h2 class="heading">Trang admin</h2>
             <div class="icons">
                 <!-- <i class="far fas fa-cog"></i> -->
                 <span><?php echo $_SESSION['user']['userName']?></span>
@@ -60,8 +60,14 @@
                 </a>
                 <a href="./admin.php?page=order&action=show">
                     <li>
-                        <i class="fas fa-user"></i>
+                        <i class="fa-solid fa-cart-shopping"></i>
                         Đơn hàng
+                    </li>
+                </a>
+                <a href="./admin.php?page=comment&action=show">
+                    <li>
+                         <i class="fa-solid fa-comment"></i>
+                        Bình luận
                     </li>
                 </a>
             </ul>
@@ -82,6 +88,9 @@
                             checkAction($page);
                             break;
                         case 'order':
+                            checkAction($page);
+                            break;
+                        case 'comment':
                             checkAction($page);
                             break;
                         default:

@@ -1,11 +1,14 @@
-<?php session_start()?>
+<?php 
+    session_start()
+    
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Checkout</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,48 +23,48 @@
     <?php include 'assets/include/header.php'?>
     <main>
         <div class="col-8">
-            <form>
+            <form action="../backEnd/order/add.php" method="POST">
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="username">Tên người dùng</label>
-                        <input type="text" class="form-control" id="username" placeholder="Nhập tên">
+                        <input name="userName" required type="text" class="form-control" id="username" placeholder="Nhập tên">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="Nhập Email">
+                        <input name="email" type="email" required  class="form-control" id="email" placeholder="Nhập Email">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="phone">Số điện thoại</label>
-                        <input type="number" class="form-control" id="phone" placeholder="Nhập số điện thoại">
+                        <input name="phone" required type="number" class="form-control" id="phone" placeholder="Nhập số điện thoại">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="street">Địa chỉ</label>
-                        <input type="text" class="form-control" id="street" placeholder="Nhập tên đường">
+                        <input name="street" required type="text" class="form-control" id="street" placeholder="Nhập tên đường">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="city">Tỉnh/Thành phố</label>
-                        <select class="form-control province" name="" id="city">
+                        <select class="form-control province" name="province" id="city">
                         </select>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="district">Quận/Huyện</label>
-                        <select class="form-control district" name="" id="district">
+                        <select class="form-control district" name="district" id="district">
                         </select>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="ward">Phường/Xã</label>
-                        <select class="form-control ward" name="" id="ward">
+                        <select class="form-control ward" name="ward" id="ward">
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="zipCode">Zip code</label>
-                        <input type="text" class="form-control" id="zipCode" placeholder="Mã zip">
+                        <label for="zipCode">Ghi chú</label>
+                        <input name="note" type="text" class="form-control" id="zipCode" placeholder="Mã zip">
                     </div>
                 </div>
                 <div class="form-group">
@@ -80,6 +83,7 @@
                 <h3>Đơn hàng</h3>
                 <?php 
                     $sum = 0;
+                    $i = 0;
                     foreach($_SESSION['cart'] as $product){
                         $sum +=  $product['price'];
                 ?>
@@ -87,13 +91,15 @@
                     <img class="product-thumnail" src="<?php echo '../backEnd/'.$product['imagePath']?>" alt="">
                     <div class="product-info">
                         <span><?php echo $product['productName']?></span>
-                        <div class="quantity">Số lượng: 1</div>
+                        <div class="quantity">Số lượng: <?php echo $_SESSION['quantity'][$i]?></div>
                     </div>
                 </div>
-                <?php } ?>
+                <?php 
+                    $i++;
+                } ?>
                 <div class="right-section">
                     <p>Tổng tiền</p>
-                    <p><?php echo $sum ?></p>
+                    <p class="total-money"><?php echo $_SESSION['totalMoney'] ?></p>
                 </div>
                 <div class="right-section">
                     <p>Vận chuyển</p>
@@ -107,30 +113,38 @@
         let province = $('.province');
         let district = $('.district');
         let ward = $('.ward');
-
+        
         $(document).ready(async function(){
 
             let provinceList = await showAllProvince();
             renderData(province, provinceList);
-
+            
             province.change(async function(){
-                let b = await getDistricts(province.val());
+                let b = await getDistricts(getCode(province.val()));
                 renderData(district, b.districts);
             })
 
             district.change(async function(){
-                let b = await getWards(district.val());
+                let b = await getWards(getCode(district.val()));
                 renderData(ward, b.wards);
             })
         })
+
 
         function renderData(select, array){
             select.html('');
             let html = '<option disable value="">Chọn</option>';
             $.each(array, (index, item) => {
-                html += `<option value="${item.code}">${item.name}</option>`;
+                html += `<option value="${item.code}|${item.name}">${item.name}</option>`;
             })
             select.append(html);
+        }
+
+        function getCode(text){
+            console.log(text);
+            let arr = text.split("|");
+            console.log(arr);
+            return arr[0];
         }
 
         function showAllProvince(){

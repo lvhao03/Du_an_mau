@@ -27,6 +27,7 @@
                         echo '<a class="dio" href="" >xin chào, ' . $_SESSION['user']['userName'] . '</a>';
                         echo '<div class="user-list">
                                 <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/user.php">Thông tin cá nhân</a>
+                                <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/orderHistory.php">Lịch sử mua hàng</a>
                                 <a href="http://localhost:8080/PHP_1/duAnMau/backEnd/signOut.php">Đăng xuất</a>
                               </div>';
                     } else {

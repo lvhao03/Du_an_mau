@@ -56,9 +56,9 @@
                                 <div class="product-info-detail">
                                     <p class="product-price"><?php echo $product_detail['price']?></p>
                                     <div class="quantity-bar">
-                                        <p class="decreaseBtn" onclick="decreaseNum(this)">-</ơ>
-                                        <p>1</p>
-                                        <p class="increaseBtn" onclick="increaseNum(this)">+</p>
+                                        <p class="decreaseBtn">-</ơ>
+                                        <p class="ammount">1</p>
+                                        <p class="increaseBtn">+</p>
                                     </div>
                                     <p class="product-total mobile-hide"><?php echo $product_detail['price']?></p>
                                 </div>
@@ -77,10 +77,6 @@
                 <div class="card">
                     <h2>Đơn hàng</h2>
                     <div class="right-section">
-                        <p>Tổng tiền</p>
-                        <p class="right-money"><?php echo $sum . 'đ' ?></p>
-                    </div>
-                    <div class="right-section">
                         <p>Vận chuyển</p>
                         <p>Miễn phí</p>
                     </div>
@@ -89,13 +85,70 @@
                         <p>Tổng tiền</p>
                         <p class="right-money"><?php echo $sum . 'đ' ?></p>
                     </div>
-                    <a href="./checkout.php">
-                        <button class="btn">Thanh toán</button>
-                    </a>
+                    <form action="./cartAction.php" method="POST">
+                        <input type="text" name="arr" class="arr" hidden>
+                        <input type="text" name="action" value="addQuantity" hidden>
+                        <input type="text" name="totalValue" class="totalValue" hidden>
+                        <button class="checkout btn">Thanh toán</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
     <?php include 'assets/include/footer.php'?>
+    <script>
+        let increaseBtn = $('.increaseBtn');
+        let decreaseBtn = $('.decreaseBtn');
+        let ammountEles = $('.ammount');
+        let totalMoneyEle = $('.right-money');
+        let moneyEles = $('.product-total');
+
+        let a = $('.checkout');
+        a.click(function(){
+            let arr = [];
+            ammountEles.each(function(){
+                arr.push(Number(this.textContent));
+            })
+            $('.arr').val(arr);
+            $('.totalValue').val(totalMoneyEle.text());
+        })
+        increaseBtn.click(function(){
+            let ammountEle = $(this).siblings('.ammount');
+            let ammount = ammountEle.text();
+            ammount++;
+            ammountEle.text(ammount); 
+
+            let parent = $(this).parent();
+            changePrice(parent.siblings('.product-total'), ammount, parent.siblings('.product-price').text() );
+            changeTotalPrice();
+        });
+
+        decreaseBtn.click(function(){
+            let ammountEle = $(this).siblings('.ammount');
+            let ammount = ammountEle.text();
+            ammount--;
+            if (ammount < 1) {
+                ammount = 1;
+            }
+            ammountEle.text(ammount);
+
+            let parent = $(this).parent();
+            changePrice(parent.siblings('.product-total'), ammount, parent.siblings('.product-price').text() );
+            changeTotalPrice();
+        });
+
+        function changePrice(priceEle, num, productPrice){
+            let money = num * productPrice ;
+            return priceEle.text(money);
+        }
+
+        function changeTotalPrice(){
+            let totalMoney = 0;
+            moneyEles.each(function(){
+                totalMoney += Number(this.textContent);
+            })
+            totalMoneyEle.text(totalMoney);
+        }
+    </script>
 </body>
 </html>

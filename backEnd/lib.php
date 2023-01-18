@@ -23,6 +23,9 @@
         case 'delete':
           include './' .$pageName. '/delete.php'; 
           break;
+        case 'show_detail':
+          include './' .$pageName. '/detail.php'; 
+          break;
       }
     }
   }

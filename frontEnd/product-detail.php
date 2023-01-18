@@ -86,9 +86,9 @@
                     </div>
                 </div>
                 <div class="group-btn">
-                    <?php echo '<a href="./cartAction.php?action=add&id='.$product['id'].'">
+                    <a href="./cartAction.php?action=add&id=<?php echo $product['id']?>">
                         <button class="btn">Mua ngay</button>
-                    </a>'?>
+                    </a>
                     <button class="add-to-btn">Thêm vào giỏ hàng</button>
                 </div>
             </div>

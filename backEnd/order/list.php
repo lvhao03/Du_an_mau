@@ -1,53 +1,49 @@
 <?php 
     include './db.php';
-    $user = $conn->query('SELECT * FROM user LIMIT 5')->fetchAll();
+    $user = $conn->query('SELECT * FROM bill LIMIT 5')->fetchAll();
 ?>
 <h2>Danh sách hóa đơn</h2>
 <div class="select">
     <div class="status-list">
-        <!-- <select class="numberShown" name="" id="">
-            <option value="5">5</option>
-            <option value="10">10</option>
-        </select> -->
-        <input name= "status" type="radio" id="all">
+        <input value="all" checked name= "status" type="radio" id="all">
         <label for="all">Tất cả</label> 
-        <input name= "status" type="radio" id="waiting">
-        <label for="waiting">Chờ xác nhận</label> 
-        <input name= "status" type="radio" id="ship">
-        <label for="ship">Đang vận chuyển</label> 
-        <input name= "status" type="radio" id="done">
-        <label for="done">Hoàn thành</label> 
+        <input value="Đang xử lý" name= "status" type="radio" id="waiting">
+        <label for="waiting">Đang xử lý</label> 
+        <input value="Hoàn tất" name= "status" type="radio" id="done">
+        <label for="done">Hoàn tất</label> 
+        <input value="Đã hủy" name= "status" type="radio" id="delete">
+        <label for="delete">Đã hủy</label> 
     </div>
     <input class="search" type="text" placeholder="Tìm kiếm">
 </div>
 <br>
+
 <table class="table table-hover">
     <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">Tên tài khoản</th>
-            <th scope="col">Email</th>
-            <th scope="col">Vai trò</th>
+            <th scope="col">Mã đơn hàng</th>
+            <th scope="col">Tên khách hàng</th>
+            <th scope="col">Địa chỉ</th>
+            <th scope="col">Tổng tiền</th>
+            <th scope="col">Ngày mua</th>
+            <th scope="col">Tình trạng</th>
             <th scope="col">Hành động</th>
         </tr>
     </thead>
     <tbody>
         <?php 
             foreach ($user as $n){
-                if ($n['userRole'] == 'admin') {
-                    $td = '<td><span class="admin">'. $n['userRole'] .'</span></td>';
-                } else {
-                    $td = '<td><span class="user">'. $n['userRole'] .'</span></td>';
-                }
                 ?>
                 <tr>
                     <th><?php echo $n['id']?></th>
-                    <td><?php echo $n['userName']?></td>
-                    <td><?php echo $n['email']?></td>
-                    <?php echo $td?>
+                    <td><?php echo $n['name']?></td>
+                    <td><?php echo $n['address']?></td>
+                    <td><?php echo $n['total_money']?></td>
+                    <td><?php echo $n['date']?></td>
                     <td>
-                        <a href="./admin.php?page=user&action=edit&id=<?php echo $n['id'] ?>"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="./admin.php?page=user&action=delete&id=<?php echo $n['id'] ?>"><i class="fa-solid fa-trash"></i></a>
+                        <span class="status"><?php echo $n['status']?></span></td>
+                    <td>
+                        <a href="./admin.php?page=order&action=show_detail&id=<?php echo $n['id']?>"><i class="fa-solid fa-plus"></i></a>
                     </td>
                 </tr>
         <?php   } ;?>   
@@ -57,36 +53,60 @@
       $(document).ready(function(){
         let input = $(".number-shown");
         let tbody = $('tbody');
+        let checkBoxes = $('input[name="status"]');
 
-        // Giới hạn số lượng hiển thị
-        input.change(function(){
+        let statues = $('.status');
+        statues.each(function(){
+            let statusList = ['Đang xử lý', 'Hoàn tất', 'Đã hủy' ];
+            let classList = ['status-xuly', 'status-done', 'status-cancel' ];
+            let i = 0;
+            $.each(statusList, (index, state) => {
+                if ($(this).text()  ==  state){
+                    $(this).addClass(classList[index]);
+                }
+                i++
+            })
+        })
+
+        checkBoxes.click(function(){
             $.ajax({
                 url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
                 data: {
-                    number: input.val(),
-                    action: 'list_query_record',
-                    type: "product"
+                    status: $('input[name="status"]:checked').val(),
+                    action: 'filter_order_status'
                 },
                 type: 'POST',
                 dataType: 'json',
                 success: function(result){
                     let html = '';
-                    console.log(result['catergoryName']);
-                    $.each(result, (index , product) => {
+                    $.each(result, (index , order) => {
                         html += ` <tr>
-                                    <th scope="row"> ${product['id']}</th>
-                                    <td><img src="${product['imagePath']}" class="rounded" alt=""></td>
-                                    <td>${product['productName']}</td>
-                                    <td>${product['catergoryName']}</td>
-                                    <td>${product['price']}</td>
-                                    <td>${product['des']}</td>
+                                    <th scope="row"> ${order['id']}</th>
+                                    <td>${order['name']}</td>
+                                    <td>${order['address']}</td>
+                                    <td>${order['total_money']}</td>
+                                    <td>${order['date']}</td>
+                                    <td><span class="status">${order['status']}</span></td>
                                     <td>
-                                        <a href="./admin.php?page=product&action=edit&id=${product['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
-                                        <a href="./admin.php?page=product&action=delete&id=${product['id']}"><i class="fa-solid fa-trash"></i></a>
+                                        <a href="./admin.php?page=order&action=show_detail&id=${order['id']}"><i class="fa-solid fa-plus"></i></a>
                                     </td>
                                 </tr>`;
                     })
                     tbody.html(html);
+                    $(document).on('mouseover', 'body', function(){
+                        let status = $('.status');
+                        status.each(function(){
+                            let statusList = ['Đang xử lý', 'Hoàn tất', 'Đã hủy' ];
+                            let classList = ['status-xuly', 'status-done', 'status-cancel' ];
+                            let i = 0;
+                            $.each(statusList, (index, state) => {
+                                if ($(this).text()  ==  state){
+                                    $(this).addClass(classList[index]);
+                                }
+                                i++
+                            })
+                        })
+                    })
                 }
             })
         })

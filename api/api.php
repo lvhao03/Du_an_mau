@@ -30,11 +30,17 @@
         case 'filter_product_catergory_backEnd':
             filter_product_catergory_backEnd($_POST['catergoryID']);
             break;
+        case 'filter_order_status';
+            filter_order_status($_POST['status']);
+            break;
         case 'filter_user_role':
             filter_user_role($_POST['userRole']);
             break;
         case 'search_query':
             search_query($_POST['tableName'], $_POST['keyWord']);
+            break;
+        case 'update_status':
+            update_status($_POST['id'], $_POST['status']);
             break;
 
     }
@@ -143,6 +149,20 @@
         $stmt->execute([$userRole]);
         echo json_encode($stmt->fetchAll());
     }
+
+    function filter_order_status($status){
+        global $conn;
+        if ($status == 'all') {
+            $sql = 'SELECT * FROM bill';
+            echo json_encode( $conn->query($sql)->fetchAll());
+            return;
+        }
+        $sql = 'SELECT * FROM bill WHERE status = ?';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$status]);
+        echo json_encode($stmt->fetchAll());
+    }
+
     function list_query_record($type, $number){
         global $conn;
         $sql = 'SELECT * FROM '. $type . ' LIMIT ' . $number;
@@ -160,6 +180,10 @@
         echo json_encode($stmt->fetchAll());
     }
 
-    function filter_product_catergory(){
-        
+    function update_status($id, $status){
+        global $conn;
+        $sql = 'UPDATE bill SET status = ? WHERE id = ?';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$status, $id]);
+
     }
