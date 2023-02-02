@@ -1,36 +1,41 @@
 <?php 
-    include './db.php';
-    $sql_1 = 'SELECT * FROM product where id=' . $_GET['id'];
-    $a = $conn->prepare($sql_1);
-    $a->execute();
-    $product = $a->fetch();
+    include_once './db.php';
+    $sql = 'SELECT * FROM product where id= ? ';
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$_GET['id']]);
+    $product = $stmt->fetch();
+
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $filePath = checkFile();
-        if (!$filePath) {
-            $sql = 'UPDATE product SET productName=?,
-                    price=?, des=? WHERE product.id = ? ';
-            $a = $conn->prepare($sql);  
-            $a->execute(array($_POST['productName'],$_POST['price'], $_POST['des'], $_GET['id']));
-            
-        } else {
-            $sql = 'UPDATE product SET productName=?,
-                    price=?, des=? , imagePath = ? WHERE product.id = ? ';
-            $a = $conn->prepare($sql);  
-            $a->execute(array($_POST['productName'],$_POST['price'], $_POST['des'], $filePath, $_GET['id']));
-        }
+        $file_path = checkFile();
+        update_product($conn, $file_path, $product);
+        redirect();
     } 
+
+    function redirect(){
+        header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=product&action=show');
+        die();
+    }
+
+    function update_product($conn, $file_path , $product){
+        $file_path = $file_path ?? $product['imagePath'];
+        $sql = 'UPDATE product SET productName= ?,
+        price= ?, des= ? , imagePath = ? WHERE product.id = ? ';
+        $stmt = $conn->prepare($sql);  
+        $stmt->execute([$_POST['productName'],$_POST['price'], $_POST['des'], $file_path, $_GET['id']]);
+    }
+
     function checkFile(){
+        if (!isset($_FILES['myfile']['name'])){
+            return null;
+        }
+
         $directory = 'upload/';
-        $filePath = $directory . $_FILES['myfile']['name'] ;
-        if (file_exists($filePath)){
-            return null;
-        }
+        $file_path = $directory . $_FILES['myfile']['name'] ;
     
-        if (move_uploaded_file($_FILES['myfile']['tmp_name'], $filePath)){
-            return $filePath;
-        } else {
-            return null;
-        }
+        if (move_uploaded_file($_FILES['myfile']['tmp_name'], $file_path)){
+            return $file_path;
+        } 
+        return null;
     }
 
 ?>

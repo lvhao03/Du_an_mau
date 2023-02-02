@@ -115,7 +115,6 @@
         let ward = $('.ward');
         
         $(document).ready(async function(){
-
             let provinceList = await showAllProvince();
             renderData(province, provinceList);
             
@@ -141,9 +140,7 @@
         }
 
         function getCode(text){
-            console.log(text);
             let arr = text.split("|");
-            console.log(arr);
             return arr[0];
         }
 

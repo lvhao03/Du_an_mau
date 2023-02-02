@@ -118,10 +118,22 @@ nav {
     align-items: center;
 }
 
-.icon-list:hover .user-list a {
+.user-info {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.user-info:hover .user-list a {
     display: block;
 }
 
+.user-icon:hover .user-list a {
+    display: block;
+}
+.user-icon:hover .user-list {
+    width: 100px;
+}
 /* .icon-list:hover  .user-list {
     display: block;
 } */
@@ -130,6 +142,7 @@ nav {
     z-index: 90;
     font-size: 12px;
     top: 75px;
+    width: 80%;
     display: flex;
     flex-direction: column;
 }
@@ -137,13 +150,14 @@ nav {
 
 .user-list a{
     padding: 8px;
+    font-size: 15px;
     display: none;
     background-color: white;
 }
 
 
 .user-list a:hover {
-    opacity: 0.6;
+    background-color: #ccc;
     cursor: pointer;
 }
 

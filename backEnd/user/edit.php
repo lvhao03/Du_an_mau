@@ -1,14 +1,20 @@
 <?php 
     include './db.php';
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+       update_user();
+    } 
+    
+    $stmt = $conn->prepare('SELECT * FROM user WHERE id= ?');
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $stmt->execute([$_GET['id']]);
+    $user = $stmt->fetch();
+
+    function update_user(){
+        global $conn;
         $stmt = $conn->prepare('UPDATE user SET userName=?, email=?, passWord=?, userRole=? WHERE user.id= ?');
         $stmt->execute([$_POST['userName'],$_POST['email'],$_POST['passWord'], $_POST['userRole'],$_GET['id']]);
         header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
-    } else {
-        $stmt = $conn->prepare('SELECT * FROM user WHERE id= ?');
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute([$_GET['id']]);
-        $user = $stmt->fetch();
+        die();
     }
 ?>
 <h2>Chỉnh sửa người dùng</h2>

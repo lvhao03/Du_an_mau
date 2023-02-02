@@ -1,6 +1,6 @@
 <?php 
     include './db.php';
-    $stmt = $conn->prepare('SELECT bill.name , bill.status, bill.total_money, product.imagePath, product.productName, product.price , bill_detail.bill_id, bill_detail.num FROM bill_detail JOIN product 
+    $stmt = $conn->prepare('SELECT bill.name , bill.email, bill.address, bill.phone, bill.status, bill.total_money, product.imagePath, product.productName, product.price , bill_detail.bill_id, bill_detail.num FROM bill_detail JOIN product 
                             ON product.id = bill_detail.product_ID JOIN bill
                             ON bill_detail.bill_id = bill.id
                             WHERE bill_detail.bill_id = ?');
@@ -34,6 +34,11 @@
             <button class="btn btn-primary">Cập nhật đơn hàng</button>
         </p>
     </div>
+    <div class="middle">
+        <p>Email: <?php echo $order[0]['email']?></p>
+        <p>Số điện thoại: <?php echo $order[0]['phone']?></p>
+        <p>Địa chỉ: <?php echo $order[0]['address']?></p>
+    </div>
     <div class="right">
         <p>Tổng sản phẩm mua: <?php echo $arr['num']?></p>
         <p>Tổng tiền thanh toán: <?php echo $order[0]['total_money']?></p>
@@ -49,11 +54,13 @@
             <th scope="col">Tên sản phẩm</th>
             <th scope="col">Số lượng</th>
             <th scope="col">Giá cả</th>
+            <th scope="col">Tổng giá</th>
         </tr>
     </thead>
     <tbody>
         <?php 
             foreach ($order as $n){
+                $total = $n['num'] * $n['price'];
                 ?>
                 <tr>
                     <th><?php echo $n['bill_id']?></th>
@@ -63,6 +70,7 @@
                     <td><?php echo $n['productName']?></td>
                     <td><?php echo $n['num']?></td>
                     <td><?php echo $n['price']?></td>
+                    <td><?php echo $total?></td>
                 </tr>
         <?php   } ;?>   
     </tbody>

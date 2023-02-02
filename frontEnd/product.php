@@ -1,5 +1,32 @@
 <?php 
     session_start();
+
+    function render_product_list($product_list){
+        foreach($product_list as $product){
+            $imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' .$product['imagePath'] ;
+            $price = $product['price'] . ' đ';
+            echo '<div class="col col-3 sm-2">'.'
+                        <div class="card">'.
+                            '<img src="'. $imagePath.'" alt="">
+                            <h2 class="product-title">'.$product['productName'].'</h2>
+                            <div class="product-words">
+                                <p class="product-des">'.$product['des'].'</p>
+                                <p class="product-price">'.$price.'</p>
+                            </div>
+                            <div class="stars">
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star not-checked"></span>
+                                <span class="fa fa-star not-checked"></span>
+                            </div>
+                            <a href="./product-detail.php?id='.$product['id'].'" class="btn-link">
+                                <button class="btn">Mua ngay</button>
+                            </a>
+                        </div>
+                </div>';
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -29,49 +56,17 @@
 
     <div class="main">
         <div class="col col-3 sm-4">
-            <!-- <div class="filter">
-                <h2>Filter</h2>
-                <div class="filter-section">
-                    <p>Choose Price</p>
-                    <hr>
-                    <div class="bar">
-                        <div class="dot"></div>
-                        <p>150$</p>
-                    </div>
-                </div>
-                <div class="filter-section">
-                    <p>Choose Size</p>
-                    <div class="sizes">
-                        <button class="active size-btn">S</button>
-                        <button class="size-btn">M</button>
-                        <button class="size-btn">X</button>
-                        <button class="size-btn">XL</button>
-                    </div>
-                </div>
-                <div class="filter-section">
-                    <p>Choose Color</p>
-                    <div class="colors">
-                        <p class="red"></p>
-                        <p class="purple"></p>
-                        <p class="black"></p>
-                        <p class="blue"></p>
-                    </div>
-                </div>
-                <a href="">
-                    <div class="btn">Filter</div>
-                </a>
-            </div> -->
             <h2>Bộ lọc tìm kiếm</h2>
             <p>Theo danh mục</p>
             <?php 
                 include '../backEnd/db.php';
-                $catergoryList = $conn->query('SELECT * FROM catergory');
+                $catergory_list = $conn->query('SELECT * FROM catergory');
                 echo '<ul class="catergory">';
-                foreach($catergoryList as $n ){
+                foreach($catergory_list as $catergory ){
             ?>
                     <div class="checkbox-control">
-                        <input value="<?php echo $n['catergoryName']?>" name="catergory[]" type="checkbox" id="<?php echo $n['catergoryName']?>">
-                        <label for="<?php echo $n['catergoryName']?>"><?php echo $n['catergoryName']?></label>
+                        <input value="<?php echo $catergory['catergoryName']?>" name="catergory[]" type="checkbox" id="<?php echo $catergory['catergoryName']?>">
+                        <label for="<?php echo $catergory['catergoryName']?>"><?php echo $catergory['catergoryName']?></label>
                     </div>
             <?php }?>
             </ul>
@@ -98,35 +93,12 @@
                     </div>
                 </div>
                 <div class="product-content">
-                    <div class="row">
+                    <div class="row main-row">
                         <?php 
                             $offset = ($_GET['page'] - 1) * 6;
                             $sql = 'SELECT * FROM product ORDER BY price asc LIMIT 6 OFFSET '. $offset;
-                            $result = $conn->query($sql)->fetchAll();
-                            foreach($result as $product){
-                                $imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' .$product['imagePath'] ;
-                                $price = $product['price'] . ' đ';
-                                echo '<div class="col col-3 sm-2">'.'
-                                            <div class="card">'.
-                                                '<img src="'. $imagePath.'" alt="">
-                                                <h2 class="product-title">'.$product['productName'].'</h2>
-                                                <div class="product-words">
-                                                    <p class="product-des">'.$product['des'].'</p>
-                                                    <p class="product-price">'.$price.'</p>
-                                                </div>
-                                                <div class="stars">
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star not-checked"></span>
-                                                    <span class="fa fa-star not-checked"></span>
-                                                </div>
-                                                <a href="./product-detail.php?id='.$product['id'].'" class="btn-link">
-                                                    <button class="btn">Mua ngay</button>
-                                                </a>
-                                            </div>
-                                    </div>';
-                            }
+                            $product_list = $conn->query($sql)->fetchAll();
+                            render_product_list($product_list);
                         ?>
                     </div>
                     <div class="pagination">
@@ -147,31 +119,8 @@
             <h2>Các sản phẩm khác</h2>
             <div class="row">
             <?php 
-                $result = $conn->query('SELECT * FROM product LIMIT 4')->fetchAll();
-                foreach($result as $product){
-                    $imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' .$product['imagePath'] ;
-                    $price = $product['price'] . ' đ';
-                    echo '<div class="col col-3 sm-2">'.'
-                                <div class="card">'.
-                                    '<img src="'. $imagePath.'" alt="">
-                                    <h2 class="product-title">'.$product['productName'].'</h2>
-                                    <div class="product-words">
-                                        <p class="product-des">'.$product['des'].'</p>
-                                        <p class="product-price">'.$price.'</p>
-                                    </div>
-                                    <div class="stars">
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star checked"></span>
-                                        <span class="fa fa-star not-checked"></span>
-                                        <span class="fa fa-star not-checked"></span>
-                                    </div>
-                                    <a href="./product-detail.php?id='.$product['id'].'" class="btn-link">
-                                        <button class="btn">Mua ngay</button>
-                                    </a>
-                                </div>
-                        </div>';
-                }
+                $product_recommend_list = $conn->query('SELECT * FROM product LIMIT 4')->fetchAll();
+                render_product_list($product_recommend_list);
             ?>
             </div>
         </div>
@@ -181,10 +130,9 @@
     <script>
         $(document).ready(function(){
             let selectPrice = $('.select-price');
-            let row = $('.row');
+            let row = $('.main-row');
             let pagination = $('.pagination');
             let checkBoxCatergory = $('input[name="catergory[]"]');
-            console.log(checkBoxCatergory);
 
             selectPrice.change(function(){
                 $.ajax({
@@ -196,33 +144,7 @@
                     type: 'POST',
                     dataType: 'json',
                     success: function(result){
-                        let html = '';
-                        if (result.length > 0){
-                            $.each(result , (index, product) => {
-                                html += `<div class="col col-3 sm-2">
-                                            <div class="card">
-                                                <img src="http://localhost:8080/PHP_1/duAnMau/backEnd/${product['imagePath']}" alt="">
-                                                <h2 class="product-title">${product['productName']}</h2>
-                                                <div class="product-words">
-                                                    <p class="product-des">${product['des']}</p>
-                                                    <p class="product-price">${product['price']}</p>
-                                                </div>
-                                                <div class="stars">
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star not-checked"></span>
-                                                    <span class="fa fa-star not-checked"></span>
-                                                </div>
-                                                <a href="./product-detail.php?id=${product['id']}" class="btn-link">
-                                                    <button class="btn">Mua ngay</button>
-                                                </a>
-                                            </div>
-                                    </div>`;
-                            })
-                            row.html(html);
-                            pagination.html(createPagination(result.length));
-                        }
+                        row.html(renderProductSection(result));
                     }
                 })
             })
@@ -242,36 +164,38 @@
                     type: 'POST',
                     dataType: 'json',
                     success: function(result){
-                        let html = '';
-                        if (result.length > 0){
-                            $.each(result , (index, product) => {
-                                html += `<div class="col col-3 sm-2">
-                                            <div class="card">
-                                                <img src="http://localhost:8080/PHP_1/duAnMau/backEnd/${product['imagePath']}" alt="">
-                                                <h2 class="product-title">${product['productName']}</h2>
-                                                <div class="product-words">
-                                                    <p class="product-des">${product['des']}</p>
-                                                    <p class="product-price">${product['price']}</p>
-                                                </div>
-                                                <div class="stars">
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star not-checked"></span>
-                                                    <span class="fa fa-star not-checked"></span>
-                                                </div>
-                                                <a href="./product-detail.php?id=${product['id']}" class="btn-link">
-                                                    <button class="btn">Mua ngay</button>
-                                                </a>
-                                            </div>
-                                    </div>`;
-                            })
-                            row.html(html);
-                        }
+                        row.html(renderProductSection(result));
                     }
                 })
             })
         });      
+
+        function renderProductSection(productList){
+            let html = '';
+            productList.forEach(product => {
+                html += `<div class="col col-3 sm-2">
+                            <div class="card">
+                                <img src="http://localhost:8080/PHP_1/duAnMau/backEnd/${product['imagePath']}" alt="">
+                                <h2 class="product-title">${product['productName']}</h2>
+                                <div class="product-words">
+                                    <p class="product-des">${product['des']}</p>
+                                    <p class="product-price">${product['price']}</p>
+                                </div>
+                                <div class="stars">
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star not-checked"></span>
+                                    <span class="fa fa-star not-checked"></span>
+                                </div>
+                                <a href="./product-detail.php?id=${product['id']}" class="btn-link">
+                                    <button class="btn">Mua ngay</button>
+                                </a>
+                            </div>
+                        </div>`;
+            });
+            return html;
+        }
 
         function createPagination(quantityOfProduct){
             let html = '';

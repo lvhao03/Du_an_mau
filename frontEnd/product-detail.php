@@ -139,12 +139,8 @@
             <h2>Có thể bạn sẽ thích</h2>
             <div class="row">
                 <?php 
-                    include '../backEnd/db.php';
-                    $a = $conn->prepare('SELECT * FROM product LIMIT 4');
-                    $a->setFetchMode(PDO::FETCH_ASSOC);
-                    $a->execute();
-                    $result = $a->fetchAll();
-                    foreach($result as $product){
+                    $product_list = $conn->query('SELECT * FROM product LIMIT 4')->fetchAll();
+                    foreach($product_list as $product){
                         $imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' .$product['imagePath'] ;
                         $price = $product['price'] . ' đ';
                         echo '<div class="col col-3 sm-2">'.'
@@ -180,7 +176,6 @@
     
         let increaseBtn = $('.increaseBtn');
         let decreaseBtn = $('.decreaseBtn');
-
 
         $(document).ready(function(){
             des.click(function(){
@@ -218,12 +213,17 @@
             });
 
             $(document).on('click', '.send-comment', function(){
-                let commentContent = $('.comment-content');
+                let textAreaEle = $(this).siblings('.comment-content');
+                let parentID = 0;
+                if (textAreaEle.attr('parentID')) {
+                    parentID = textAreaEle.attr('parentID');
+                }
                 $.ajax({
                     url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php/?id=<?php echo $_GET['id']?>',
                     data: {
                         action: 'send_comment',
-                        content: commentContent.val()
+                        content: textAreaEle.val(),
+                        parent_id: parentID
                     },
                     type: 'POST',
                     dataType: 'json',
@@ -231,32 +231,116 @@
                         renderCommentSection(result);
                     }
                 })
-                    
             })
 
+            $(document).on('click', '.fa-reply', function(){
+                hideAllCommentRepliedForm();
+                let html = '';
+                let commentForm = getCommentFormElement($(this));
+                let parentID = getParentID(commentForm);
+                html+= `<textarea class="comment-content" placeholder="Nhập bình luận" name="content" rows="3" cols="50" parentID="${parentID}"></textarea>
+                            <button class="add-to-btn send-comment">Gửi bình luận</button>`;
+                commentForm.html(html);
+            })
+
+            function hideAllCommentRepliedForm(){
+                $('.replied-comment-form').each(function(){
+                    $('.replied-comment-form').html('');
+                });
+            }
+
+            function getCommentFormElement(ele){
+                let rootComment = ele.parentsUntil('.user-comment');
+                let replySection = rootComment.siblings('.replied-section');
+                return replySection.children('.replied-comment-form');
+            }
+
+            function getParentID(ele){
+                return ele.attr('parentID');
+            }
+
+            function getRepliedComment(id){
+                let repliedCommentSection = $(`#${id}`);
+                $.ajax({
+                    url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php/?id=<?php echo $_GET['id']?>',
+                    data: {
+                        action: 'show_replied_comment',
+                        comment_parent_id: id
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (result){
+                        let html = '';
+                        if (result.length > 0) {
+                            $.each(result, (index, user) => {
+                                html += `
+                                        <div class="replied-comment">
+                                            <div class="root-comment">
+                                                <img src="../backEnd/${user['imagePath']}">
+                                                <div class="user-comment-info">
+                                                    <div class="user-date">
+                                                        <h3>${user['userName']}</h3>
+                                                        <div>${user['date']}</div>
+                                                    </div>
+                                                    <p>${user['content']}<p>
+                                                    <div class="user-icon">
+                                                        <i class="fas fa-solid fa-heart"></i>
+                                                        <i class="fas fa-solid fa-reply"></i>
+                                                        <i class="fas fa-solid fa-trash"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="replied-section">
+                                                <div class="replied-comment-section" id="${user['id']}"></div>
+                                                <div class="replied-comment-form" parentID = "${user['parent_id']}"></div>
+                                            </div>
+                                        </div>
+                                    `;
+                            });
+                        } 
+                        repliedCommentSection.html(html);
+                    }
+                })
+            }
+
             function renderCommentSection(result){
+                subContentSection.html('');
                 let html = '';
                 if (result.length > 0) {
                     $.each(result, (index, user) => {
                         html += `
                                 <div class="user-comment">
-                                    <img src="../backEnd/${user['imagePath']}">
-                                    <div class="user-comment-info">
-                                        <div class="user-date">
-                                            <h3>${user['userName']}</h3>
-                                            <div>${user['date']}</div>
+                                    <div class="root-comment">
+                                        <img src="../backEnd/${user['imagePath']}">
+                                        <div class="user-comment-info">
+                                            <div class="user-date">
+                                                <h3>${user['userName']}</h3>
+                                                <div>${user['date']}</div>
+                                            </div>
+                                            <p>${user['content']}<p>
+                                            <div class="user-icon">
+                                                <i class="fas fa-solid fa-heart"></i>
+                                                <i class="fas fa-solid fa-reply"></i>
+                                                <i class="fas fa-solid fa-trash"></i>
+                                            </div>
                                         </div>
-                                        <p>${user['content']}<p>
+                                    </div>
+                                    <div class="replied-section">
+                                        <div class="replied-comment-section" id="${user['id']}"></div>
+                                        <div class="replied-comment-form" parentID="${user['id']}"></div>
                                     </div>
                                 </div>
                             `;
+                        subContentSection.append(html);
+                        getRepliedComment(user['id']);
+                        html = '';
                     });
                 } else {
                     html += '<p>Hiện chưa có bình luận nào</p>'
                 }
                 html+= `<textarea class="comment-content" placeholder="Nhập bình luận" name="content" rows="3" cols="10">  </textarea>
                             <button class="add-to-btn send-comment">Gửi bình luận</button>`;
-                subContentSection.html(html);
+                subContentSection.append(html);
             }
 
             increaseBtn.click(function(){

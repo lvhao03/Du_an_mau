@@ -1,19 +1,9 @@
 <?php 
     include './db.php';
-    if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $a = $conn->prepare('SELECT product.id , product.productName, product.price, product.des , catergory.catergoryName, product.imagePath FROM product JOIN catergory WHERE product.catergoryid = catergory.id AND product.productName like :name  LIMIT 5');
-        $name = $_POST['name'].'%';
-        $a->bindParam(':name', $name);
-        $a->setFetchMode(PDO::FETCH_ASSOC);
-        $a->execute();
-        $result = $a->fetchAll();
-    } else {
-        $a = $conn->prepare('SELECT product.id , product.productName, product.price, product.des , catergory.catergoryName, product.imagePath FROM product JOIN catergory WHERE product.catergoryid = catergory.id LIMIT 5');
-        $a->setFetchMode(PDO::FETCH_ASSOC);
-        $a->execute();
-        $result = $a->fetchAll();
-    }
-
+    $stmt = $conn->prepare('SELECT product.id , product.productName, product.price, product.des , catergory.catergoryName, product.imagePath FROM product JOIN catergory WHERE product.catergoryid = catergory.id LIMIT 5');
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    $stmt->execute();
+    $product_list = $stmt->fetchAll();
 ?>
 <h2>Danh sách sản phẩm</h2>
 <div class="select">
@@ -23,13 +13,11 @@
             <option value="0">Tất cả</option>
             <?php 
                 $sql = 'SELECT * FROM catergory';
-                $catergoryList = $conn->query('SELECT * FROM catergory')->fetchAll();
-                foreach($catergoryList as $catergory) {
+                $catergory_list = $conn->query('SELECT * FROM catergory')->fetchAll();
+                foreach($catergory_list as $catergory) {
             ?>
                 <option value="<?php echo $catergory['id']?>"><?php echo $catergory['catergoryName']?></option>
             <?php }?>
-            <!-- <option value="5">5</option>
-            <option value="10">10</option> -->
         </select>
     </div>
     <input class="search" type="text" placeholder="Tìm kiếm theo tên sản phẩm">
@@ -50,7 +38,7 @@
     <tbody>
         
         <?php 
-            foreach ($result as $product){
+            foreach ($product_list as $product){
                 ?>
                 <tr>
                     <th scope="row"><?php echo $product['id']?></th>
@@ -73,7 +61,7 @@
         let filterBar = $(".filter-product");
         let tbody = $('tbody');
 
-        // Giới hạn số lượng hiển thị
+        // Lọc theo danh mục sản phẩm
         filterBar.change(function(){
             $.ajax({
                 url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
@@ -84,23 +72,7 @@
                 type: 'POST',
                 dataType: 'json',
                 success: function(result){
-                    let html = '';
-                    console.log(result);
-                    $.each(result, (index , product) => {
-                        html += ` <tr>
-                                    <th scope="row"> ${product['id']}</th>
-                                    <td><img src="${product['imagePath']}" class="rounded" alt=""></td>
-                                    <td>${product['productName']}</td>
-                                    <td>${product['catergoryName']}</td>
-                                    <td>${product['price']}</td>
-                                    <td>${product['des']}</td>
-                                    <td>
-                                        <a href="./admin.php?page=product&action=edit&id=${product['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
-                                        <a href="./admin.php?page=product&action=delete&id=${product['id']}"><i class="fa-solid fa-trash"></i></a>
-                                    </td>
-                                </tr>`;
-                    })
-                    tbody.html(html);
+                    renderProductSection(result);
                 }
             })
         })
@@ -117,25 +89,29 @@
                 type: 'POST',
                 dataType: 'json',
                 success: function(result){
-                    let html = '';
-                    $.each(result, (index , product) => {
-                        html += ` <tr>
-                                    <th scope="row"> ${product['id']}</th>
-                                    <td><img src="${product['imagePath']}" class="rounded" alt=""></td>
-                                    <td>${product['productName']}</td>
-                                    <td>${product['catergoryName']}</td>
-                                    <td>${product['price']}</td>
-                                    <td>${product['des']}</td>
-                                    <td>
-                                        <a href="./admin.php?page=product&action=edit&id=${product['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
-                                        <a href="./admin.php?page=product&action=delete&id=${product['id']}"><i class="fa-solid fa-trash"></i></a>
-                                    </td>
-                                </tr>`;
-                    })
-                    tbody.html(html);
+                   renderProductSection(result);
                 }
             })
         })
+
+        function renderProductSection(productList){
+            let html = '';
+            productList.forEach(product => {
+                html += ` <tr>
+                            <th scope="row"> ${product['id']}</th>
+                            <td><img src="${product['imagePath']}" class="rounded" alt=""></td>
+                            <td>${product['productName']}</td>
+                            <td>${product['catergoryName']}</td>
+                            <td>${product['price']}</td>
+                            <td>${product['des']}</td>
+                            <td>
+                                <a href="./admin.php?page=product&action=edit&id=${product['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
+                                <a href="./admin.php?page=product&action=delete&id=${product['id']}"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>`;
+            });
+            tbody.html(html);
+        }
     })
         
 </script>

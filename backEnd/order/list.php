@@ -1,6 +1,6 @@
 <?php 
     include './db.php';
-    $user = $conn->query('SELECT * FROM bill LIMIT 5')->fetchAll();
+    $order_list = $conn->query('SELECT * FROM bill LIMIT 5')->fetchAll();
 ?>
 <h2>Danh sách hóa đơn</h2>
 <div class="select">
@@ -32,18 +32,31 @@
     </thead>
     <tbody>
         <?php 
-            foreach ($user as $n){
+            function changeStateBackGround($state){
+            if ($state == 'Đang xử lý') {
+                return '<span class="status status-xuly">'.$state.'</span>';
+            }
+            if ($state == 'Hoàn tất') {
+                return '<span class="status status-done">'.$state.'</span>';
+            }
+            if ($state == 'Đã hủy') {
+                return '<span class="status status-cancel">'.$state.'</span>';
+            }
+            }
+
+            foreach ($order_list as $order){
+                $state = changeStateBackGround($order['status']);
                 ?>
                 <tr>
-                    <th><?php echo $n['id']?></th>
-                    <td><?php echo $n['name']?></td>
-                    <td><?php echo $n['address']?></td>
-                    <td><?php echo $n['total_money']?></td>
-                    <td><?php echo $n['date']?></td>
+                    <th><?php echo $order['id']?></th>
+                    <td><?php echo $order['name']?></td>
+                    <td><?php echo $order['address']?></td>
+                    <td><?php echo $order['total_money']?></td>
+                    <td><?php echo $order['date']?></td>
                     <td>
-                        <span class="status"><?php echo $n['status']?></span></td>
+                        <?php echo $state; ?>
                     <td>
-                        <a href="./admin.php?page=order&action=show_detail&id=<?php echo $n['id']?>"><i class="fa-solid fa-plus"></i></a>
+                        <a href="./admin.php?page=order&action=show_detail&id=<?php echo $order['id']?>"><i class="fa-solid fa-plus"></i></a>
                     </td>
                 </tr>
         <?php   } ;?>   
@@ -55,19 +68,6 @@
         let tbody = $('tbody');
         let checkBoxes = $('input[name="status"]');
 
-        let statues = $('.status');
-        statues.each(function(){
-            let statusList = ['Đang xử lý', 'Hoàn tất', 'Đã hủy' ];
-            let classList = ['status-xuly', 'status-done', 'status-cancel' ];
-            let i = 0;
-            $.each(statusList, (index, state) => {
-                if ($(this).text()  ==  state){
-                    $(this).addClass(classList[index]);
-                }
-                i++
-            })
-        })
-
         checkBoxes.click(function(){
             $.ajax({
                 url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
@@ -78,73 +78,76 @@
                 type: 'POST',
                 dataType: 'json',
                 success: function(result){
-                    let html = '';
-                    $.each(result, (index , order) => {
-                        html += ` <tr>
-                                    <th scope="row"> ${order['id']}</th>
-                                    <td>${order['name']}</td>
-                                    <td>${order['address']}</td>
-                                    <td>${order['total_money']}</td>
-                                    <td>${order['date']}</td>
-                                    <td><span class="status">${order['status']}</span></td>
-                                    <td>
-                                        <a href="./admin.php?page=order&action=show_detail&id=${order['id']}"><i class="fa-solid fa-plus"></i></a>
-                                    </td>
-                                </tr>`;
-                    })
-                    tbody.html(html);
-                    $(document).on('mouseover', 'body', function(){
-                        let status = $('.status');
-                        status.each(function(){
-                            let statusList = ['Đang xử lý', 'Hoàn tất', 'Đã hủy' ];
-                            let classList = ['status-xuly', 'status-done', 'status-cancel' ];
-                            let i = 0;
-                            $.each(statusList, (index, state) => {
-                                if ($(this).text()  ==  state){
-                                    $(this).addClass(classList[index]);
-                                }
-                                i++
-                            })
-                        })
-                    })
+                    renderOrderSection(result);
                 }
             })
         })
 
-        let searchBar = $('.search');
-        searchBar.keyup(function(){
-            $.ajax({
-                url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
-                data: {
-                    keyWord: searchBar.val(),
-                    action: 'search_query',
-                    tableName: "user"
-                },
-                type: 'POST',
-                dataType: 'json',
-                success: function(result){
-                    let html = '';
-                    $.each(result, (index , user) => {
-                        let td = '';
-                        if (user['userRole'] == 'admin') {
-                            td = `<td><span class="admin">${user['userRole']}</span></td>`;
-                        } else {
-                            td = `<td><span class="user">${user['userRole']} </span></td>`;
-                        }
-                        html += `<tr>
-                                    <th scope="row"> ${user['id']}</th>
-                                    <td>${user['userName']}</td>
-                                    <td>${user['email']}</td>
-                                    ${td}
-                                    <td>
-                                        <a href="./admin.php?page=user&action=edit&id=${user['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
-                                        <a href="./admin.php?page=user&action=delete&id=${user['id']}"><i class="fa-solid fa-trash"></i></a>
-                                    </td>
-                                </tr>`;
-                    })
-                    tbody.html(html);
-                }
+        function changeStateBackGround(state){
+            if (state == 'Đang xử lý') {
+                return `<span class="status status-xuly">${state}</span></td>`;
+            }
+            if (state == 'Hoàn tất') {
+                return `<span class="status status-done">${state}</span></td>`;
+            }
+            if (state == 'Đã hủy') {
+                return `<span class="status status-cancel">${state}</span></td>`;
+            }
+        }
+
+        function renderOrderSection(orderList){
+            let html = '';
+            orderList.forEach(order => {
+                let state = changeStateBackGround(order['status']);
+                html += ` <tr>
+                            <th scope="row"> ${order['id']}</th>
+                            <td>${order['name']}</td>
+                            <td>${order['address']}</td>
+                            <td>${order['total_money']}</td>
+                            <td>${order['date']}</td>
+                            <td>
+                                ${state}
+                            <td>
+                                <a href="./admin.php?page=order&action=show_detail&id=${order['id']}"><i class="fa-solid fa-plus"></i></a>
+                            </td>
+                        </tr>`;
             })
-        })
+            tbody.html(html);
+        }   
+        // let searchBar = $('.search');
+        // searchBar.keyup(function(){
+        //     $.ajax({
+        //         url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
+        //         data: {
+        //             keyWord: searchBar.val(),
+        //             action: 'search_query',
+        //             tableName: "user"
+        //         },
+        //         type: 'POST',
+        //         dataType: 'json',
+        //         success: function(result){
+        //             let html = '';
+        //             $.each(result, (index , user) => {
+        //                 let td = '';
+        //                 if (user['userRole'] == 'admin') {
+        //                     td = `<td><span class="admin">${user['userRole']}</span></td>`;
+        //                 } else {
+        //                     td = `<td><span class="user">${user['userRole']} </span></td>`;
+        //                 }
+        //                 html += `<tr>
+        //                             <th scope="row"> ${user['id']}</th>
+        //                             <td>${user['userName']}</td>
+        //                             <td>${user['email']}</td>
+        //                             ${td}
+        //                             <td>
+        //                                 <a href="./admin.php?page=user&action=edit&id=${user['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
+        //                                 <a href="./admin.php?page=user&action=delete&id=${user['id']}"><i class="fa-solid fa-trash"></i></a>
+        //                             </td>
+        //                         </tr>`;
+        //             })
+        //             tbody.html(html);
+        //         }
+        //     })
+        // })
     })
 </script>

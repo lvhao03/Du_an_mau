@@ -1,21 +1,32 @@
 <?php
-   session_start();
-   include '../backEnd/db.php';
+    session_start();
+    include '../backEnd/db.php';
+    $bill_detail = get_bill_detail_info($conn);
+    $bill_product_list = get_bill_products($conn);
+    $total_product = get_total_product_buy($conn);
 
-   // Lấy danh sách sản phảm mà đơn hàng đã đặt
-   $stmt = $conn->prepare('SELECT bill.name , bill.total_money, product.imagePath, product.productName, product.price , bill_detail.bill_id, bill_detail.num FROM bill_detail JOIN product 
-            ON product.id = bill_detail.product_ID JOIN bill
-            ON bill_detail.bill_id = bill.id
-            WHERE bill_detail.bill_id = ?');
-   $stmt->execute([$_GET['id']]);
-   $order = $stmt->fetchAll();
+    function get_bill_detail_info($conn){
+        $stmt = $conn->prepare('SELECT bill.name , bill.total_money, bill.id,
+                                bill.status FROM bill WHERE bill.id = ?');
+        $stmt->execute([$_GET['id']]);
+        return $stmt->fetch();
+    }
 
-   // Lấy số lượng sản phẩm
-   $sql_2 = 'SELECT count(*) as num FROM bill_detail join bill 
-            ON bill_detail.bill_id = bill.id WHERE bill.userID = ? AND  bill_detail.bill_id = ?';
-   $stmt_2 = $conn->prepare($sql_2);
-   $stmt_2->execute([$_SESSION['user']['id'] , $_GET['id']]);
-   $numberOfProduct= $stmt_2->fetch();
+    function get_bill_products($conn){
+        $stmt = $conn->prepare('SELECT product.imagePath, product.productName, 
+                                product.price , bill_detail.bill_id, bill_detail.num FROM bill_detail JOIN product 
+                                ON product.id = bill_detail.product_ID JOIN bill
+                                ON bill_detail.bill_id = bill.id
+                                WHERE bill_detail.bill_id = ?');
+        $stmt->execute([$_GET['id']]);
+        return $stmt->fetchAll();
+    }
+
+    function get_total_product_buy($conn){
+        $stmt = $conn->prepare('SELECT count(id) as total_product FROM bill_detail WHERE bill_detail.bill_id = ? GROUP BY bill_detail.bill_id');
+        $stmt->execute([$_GET['id']]);
+        return $stmt->fetch();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -42,12 +53,12 @@
         <div class="order-detail">
             <div class="left">
                 <p>Mã đơn hàng: <?php echo $_GET['id']?></ưp>
-                <p>Người mua: <?php echo $order[0]['name']?></p>
-                <p>Tình trạng: Chờ xác nhận</p>
+                <p>Người mua: <?php echo $bill_detail['name']?></p>
+                <p>Tình trạng: <?php echo $bill_detail['status']?></p>
             </div>
             <div class="right">
-                <p>Tổng sản phẩm mua: <?php echo $numberOfProduct['num']?></p>
-                <p>Tổng tiền thanh toán: <?php echo $order[0]['total_money']?></p>
+                <p>Tổng danh sách sản phẩm mua: <?php echo $total_product['total_product']?></p>
+                <p>Tổng tiền thanh toán: <?php echo $bill_detail['total_money']?></p>
             </div>
         </div>
 
@@ -60,20 +71,23 @@
                 <th scope="col">Tên sản phẩm</th>
                 <th scope="col">Số lượng</th>
                 <th scope="col">Giá cả</th>
+                <th scope="col">Tổng giá</th>
             </tr>
         </thead>
         <tbody>
             <?php 
-                foreach ($order as $n){
+                foreach ($bill_product_list as $product){
+                    $total_price = $product['num'] * $product['price'];
                     ?>
                     <tr>
-                        <th><?php echo $n['bill_id']?></th>
+                        <th><?php echo $product['bill_id']?></th>
                         <td>
-                            <img src="../backEnd/<?php echo $n['imagePath']?>" alt="">
+                            <img src="../backEnd/<?php echo $product['imagePath']?>" alt="">
                         </td>
-                        <td><?php echo $n['productName']?></td>
-                        <td><?php echo $n['num']?></td>
-                        <td><?php echo $n['price']?></td>
+                        <td><?php echo $product['productName']?></td>
+                        <td><?php echo $product['num']?></td>
+                        <td><?php echo $product['price']?></td>
+                        <td><?php echo $total_price?></td>
                     </tr>
             <?php   } ;?>   
         </tbody>

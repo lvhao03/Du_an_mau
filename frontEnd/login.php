@@ -1,5 +1,41 @@
 <?php 
     session_start();
+    include '../backEnd/db.php';
+    include '../backEnd/lib.php';
+
+    if (isset($_POST['user_name']) && isset($_POST['pass_word'])){
+        $user = get_user($_POST['user_name'], $_POST['pass_word']) ?? null;
+        if (!$user) {
+            $error = '<span class="red">Tên đăng nhập hoặc mật khẩu bị sai</span>';
+        } else {
+            storeUserInSession($user);        
+            redirect_user($user);        
+        }
+    }
+
+    function redirect_user($user){
+        if (isAdmin($user)) {
+            return header('Location: ../backEnd/admin.php?page=index');
+        }
+        return header('Location: ../frontEnd/index.php');
+    }
+
+    function isAdmin($user){
+        if ($user['userRole'] == 'admin') {
+            return true;
+        }
+        return false;
+    }
+
+
+    function get_user($user_name, $user_password){
+        global $conn;
+        $stmt = $conn->prepare('SELECT * FROM user WHERE userName = ? AND passWord = ?');
+        $stmt->execute([$user_name,$user_password]);
+        $user = $stmt->fetch();
+        return $user;
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -24,14 +60,16 @@
         <img src="./assets/images/Group 150.png" alt="">
         <div class="card">
             <h2>Đăng nhập</h2>
-            <form action="../backEnd/login.php" method="GET">
+            <form action="" method="POST">
                 <label for="username">
                     <p>Tên tài khoản</p>
-                    <input id='username'type="text" name='userName' required placeholder="Điền tên tài khoản">
+                    <input id='username'type="text" name='user_name' required placeholder="Điền tên tài khoản">
+                    <?php echo $error ?? ''?>
                 </label>
                 <label for="password">
                     <p>Mật khẩu</p>
-                    <input id='password'type="password" name='passWord' required placeholder="Điền mật khẩu">
+                    <input id='password'type="password" name='pass_word' required placeholder="Điền mật khẩu">
+                    <?php echo $error ?? ''?>
                 </label>
                 <div class="card-section">
                     <div class="card-checkbox">

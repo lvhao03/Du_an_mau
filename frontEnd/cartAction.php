@@ -27,6 +27,7 @@
         if (!$_SESSION['cart']) {
             $_SESSION['cart'] = [];
         }
+        
         array_push($_SESSION['cart'], $result);
         header('Location: ./cart.php');
     }
@@ -46,6 +47,7 @@
         if (!isset($_SESSION['totalMoney'])){
             $_SESSION['totalMoney'] = $_POST['totalValue'];
         }
+        
         $_SESSION['quantity'] = $arr;
         header('Location: ./checkout.php');
     }

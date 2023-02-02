@@ -7,6 +7,5 @@
 
     $sql = 'SELECT * FROM user ORDER BY ID DESC ';
     $user = $conn->query($sql)->fetch();
-    // include './sendMail.php';
     storeUserInSession($user); 
     header('Location: ../frontEnd/index.php'); 

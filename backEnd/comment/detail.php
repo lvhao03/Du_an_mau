@@ -12,11 +12,11 @@
     <tbody>
         <?php 
             include './db.php';
-            $sql = 'SELECT * FROM comment join product on comment.productID = product.id join user on user.id = comment.userID WHERE product.id = ?';
+            $sql = 'SELECT comment.id , user.userName, comment.content, comment.date FROM comment join product on comment.productID = product.id join user on user.id = comment.userID WHERE product.id = ?';
             $stmt = $conn->prepare($sql);
             $stmt->execute([$_GET['id']]);
-            $commentList = $stmt->fetchAll();
-            foreach($commentList as $comment){
+            $comment_list = $stmt->fetchAll();
+            foreach($comment_list as $comment){
         ?>
                 <tr>
                     <th scope="row"><?php echo $comment['id']?></th>

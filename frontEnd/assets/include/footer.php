@@ -6,31 +6,31 @@
                     <img src="./assets/Capture5.PNG" alt="">
                     <h2>Candle leaf</h2>
                 </div>
-                <p>Your nature clothing store is here</p>
+                <p>Cửa hàng quần áo</p>
             </div>
             <div class="footer-content-right">
                 <div class="footer-discovery">
-                    <h3>Discovery</h3>
+                    <h3>Khám phá</h3>
                     <ul class="footer-list">
-                        <li><a href="">New season</a></li>
-                        <li><a href="">Most search</a></li>
-                        <li><a href="">Most selled</a></li>
+                        <li><a href="">Hot nhất</a></li>
+                        <li><a href="">Best seller</a></li>
+                        <li><a href="">Mới nhất</a></li>
                     </ul>
                 </div>
                 <div class="footer-about">
-                    <h3>About</h3>
+                    <h3>Hỗ trợ khách hàng</h3>
                     <ul class="footer-list">
-                        <li><a href="">Help</a></li>
-                        <li><a href="">Shipping</a></li>
+                        <li><a href="">Hỗ trợ</a></li>
+                        <li><a href="">Vận chuyển</a></li>
                         <li><a href="">Reviews</a></li>
                     </ul>
                 </div>
                 <div class="footer-info">
-                    <h3>Info</h3>
+                    <h3>Thông tin liên hệ</h3>
                     <ul class="footer-list">
-                        <li><a href="">Contact us</a></li>
-                        <li><a href="">Privacy polices</a></li>
-                        <li><a href="">Term & condition</a></li>
+                        <li><a href="">Liên hệ với chúng tôi</a></li>
+                        <li><a href="">Chính sách bảo mật</a></li>
+                        <li><a href="">Chính sách giao hàng</a></li>
                     </ul>
                 </div>
             </div>

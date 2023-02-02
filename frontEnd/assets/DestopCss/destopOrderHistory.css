@@ -9,6 +9,7 @@ h2 {
 
 .order-detail {
     display: flex;
+    gap: 20px;
 }
 
 td img {
@@ -16,4 +17,33 @@ td img {
     height: 90px;
     width: 120px;
     object-fit: cover;
+}
+
+td span {
+    border-radius: 10px;
+    padding: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+.status-xuly {
+    background-color: yellow;
+    color: black;
+    font-weight: 100;
+    padding: 5px;
+}
+
+.status-done {
+    background-color: rgb(111, 221, 111);
+    color: white;
+    font-weight: 100;
+    padding: 5px;
+
+}
+
+.status-cancel{
+    background-color: red;
+    color: white;
+    font-weight: 100;
+    padding: 5px;
 }

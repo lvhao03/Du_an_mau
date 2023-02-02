@@ -23,7 +23,6 @@
         <nav>
             <h2 class="heading">Trang admin</h2>
             <div class="icons">
-                <!-- <i class="far fas fa-cog"></i> -->
                 <span><?php echo $_SESSION['user']['userName']?></span>
                 <img class="user-img" src="<?php echo $_SESSION['user']['imagePath'] ?>" alt="">
                 <a href="./signOut.php"><i class="fas fa-sign-out-alt"></i></a>
@@ -70,6 +69,12 @@
                         Bình luận
                     </li>
                 </a>
+                <a href="./admin.php?page=stats&action=show">
+                    <li>
+                        <i class="fas fa-solid fa-chart-simple"></i>
+                        Thống kê
+                    </li>
+                </a>
             </ul>
         </div>
         <div class="content">
@@ -91,6 +96,9 @@
                             checkAction($page);
                             break;
                         case 'comment':
+                            checkAction($page);
+                            break;
+                        case 'chart':
                             checkAction($page);
                             break;
                         default:

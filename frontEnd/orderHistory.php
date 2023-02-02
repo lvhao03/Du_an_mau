@@ -5,14 +5,14 @@
     // Lấy danh sách đơn hàng của user
     $stmt = $conn->prepare('SELECT * FROM bill WHERE bill.userID = ? ');
     $stmt->execute([$_SESSION['user']['id']]);
-    $orderList = $stmt->fetchAll();
+    $order_list = $stmt->fetchAll();
 
     // Đếm số lượng sản phẩm của mỗi đơn hàng
     $sql_2 = 'SELECT count(*) as num FROM bill_detail join bill 
           ON bill_detail.bill_id = bill.id WHERE bill.userID = ? GROUP BY bilL_detail.bill_id';
     $stmt_2 = $conn->prepare($sql_2);
     $stmt_2->execute([$_SESSION['user']['id']]);
-    $numberOfProduct= $stmt_2->fetchAll();
+    $number_of_product = $stmt_2->fetchAll();
 
 ?>
 <!DOCTYPE html>
@@ -50,17 +50,29 @@
         </thead>
         <tbody>
             <?php
+               function change_status_back_ground($status){
+                if ($status == 'Đang xử lý') {
+                    return '<span class="status status-xuly">'.$status.'</span>';
+                }
+                if ($status == 'Hoàn tất') {
+                    return '<span class="status status-done">'.$status.'</span>';
+                }
+                if ($status == 'Đã hủy') {
+                    return '<span class="status status-cancel">'.$status.'</span>';
+                }
+                }
                 $i = 0;
-                foreach ($orderList as $n){
+                foreach ($order_list as $order){
+                    $status = change_status_back_ground($order['status']);
                     ?>
                     <tr>
-                        <th><?php echo $n['id']?></th>
-                        <td><?php echo $n['date']?></td>
-                        <td><?php echo $numberOfProduct[$i]['num']?></td>
-                        <td><?php echo $n['total_money']?></td>
-                        <td><?php echo $n['status']?></td>
+                        <th><?php echo $order['id']?></th>
+                        <td><?php echo $order['date']?></td>
+                        <td><?php echo $number_of_product[$i]['num']?></td>
+                        <td><?php echo $order['total_money']?></td>
+                        <td><?php echo $status ?></td>
                         <td>
-                            <a href="./orderDetail.php?id=<?php echo $n['id']?>">Xem chi tiết</a>
+                            <a href="./orderDetail.php?id=<?php echo $order['id']?>">Xem chi tiết</a>
                         </td>
                     </tr>
             <?php  

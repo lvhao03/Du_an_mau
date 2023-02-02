@@ -13,31 +13,28 @@
                 <input class="search-product" type="text" placeholder="Tìm kiếm sản phẩm">
                 <div class="content"></div>
             </li>
-            <!-- <li>
-            </li> -->
         </ul>
         <div class="nav-icon">
             <div class="icon-list">
-                <!-- <div class='user-icon'href="">
-                    <i class="far fa-user"></i>
-                </div> -->
                 <?php 
                     if (isset($_SESSION['user'])){
-                        echo '<img class="user_avatar" src="../backEnd/'. $_SESSION['user']['imagePath'] .'">';
-                        echo '<a class="dio" href="" >xin chào, ' . $_SESSION['user']['userName'] . '</a>';
-                        echo '<div class="user-list">
-                                <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/user.php">Thông tin cá nhân</a>
-                                <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/orderHistory.php">Lịch sử mua hàng</a>
-                                <a href="http://localhost:8080/PHP_1/duAnMau/backEnd/signOut.php">Đăng xuất</a>
-                              </div>';
+                        echo '<div class="user-info">';
+                            echo '<img class="user_avatar" src="../backEnd/'. $_SESSION['user']['imagePath'] .'">';
+                            echo '<a class="dio" href="" >xin chào, ' . $_SESSION['user']['userName'] . '</a>';
+                            echo '<div class="user-list">
+                                    <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/user.php">Thông tin cá nhân</a>
+                                    <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/orderHistory.php">Lịch sử mua hàng</a>
+                                    <a href="http://localhost:8080/PHP_1/duAnMau/backEnd/signOut.php">Đăng xuất</a>
+                                </div>';
+                        echo '</div>';
                     } else {
-                        echo '<div class="user-icon" href="">
-                                  <i class="far fa-user"></i>
-                              </div>';
-                        echo '<div class="user-list">
-                                  <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/login.php">Đăng nhập</a>
-                                  <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/register.php">Đăng ký</a>
-                              </div>';
+                        echo '<div class="user-icon">
+                                  <i class="fasss far fa-user"></i>';
+                            echo '<div class="user-list">
+                                    <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/login.php">Đăng nhập</a>
+                                    <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/register.php">Đăng ký</a>
+                                </div>';
+                        echo '</div>';
                     }
                 ?>
                 <a href="./cart.php"><i class="fas far fa-shopping-cart"></i></a></li>
@@ -69,25 +66,29 @@
                 type: 'POST',
                 dataType: 'json',
                 success: function (result){
-                    let html = "";
-                    if (result.length > 0){
-                        $.each(result, (index , item) => {
-                            let imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' + item['imagePath'];
-                            html += `<li>
-                                        <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/product-detail.php?id=${item['id']}">
-                                        <div class='search'>
-                                            <img class="img-search" src=${imagePath}>
-                                            <span>${item['productName']}</span>
-                                        </div>
-                                        </a>
-                                    </li>`;
-                        })
-                    } else {
-                        html+= '<li class="not-found">ko tìm thấy sản phẩm</li>';
-                    }
-                    content.html(html);
+                    console.log(input.val());
+                    content.html(renderProductSearchList(result));
                 }
             })
         });
+
+        function renderProductSearchList(productList){
+            let html = "";
+            if (productList.length == 0) {
+                return html = '<li class="not-found">ko tìm thấy sản phẩm</li>';
+            }
+            productList.forEach(product => {
+                let imagePath = 'http://localhost:8080/PHP_1/duAnMau/backEnd/' + product['imagePath'];
+                html += `<li>
+                            <a href="http://localhost:8080/PHP_1/duAnMau/frontEnd/product-detail.php?id=${product['id']}">
+                            <div class='search'>
+                                <img class="img-search" src=${imagePath}>
+                                <span>${product['productName']}</span>
+                            </div>
+                            </a>
+                        </li>`;
+            });
+            return html;
+        }
     })
 </script>

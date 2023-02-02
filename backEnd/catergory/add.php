@@ -1,13 +1,11 @@
 <?php 
     include './db.php';
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $a = $conn->prepare("INSERT INTO catergory(catergoryName) VALUES (:name)");
-        $a->bindParam(':name',  $_POST['catergoryName']);
-        $a->execute();
+        $stmt = $conn->prepare("INSERT INTO catergory(catergoryName) VALUES (?)");
+        $stmt->execute([$_POST['catergoryName']]);
         header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=catergory&action=show');
     }
 ?>
-
 
 <h2>Thêm mới danh mục</h2>
 <form class="form" method="POST">

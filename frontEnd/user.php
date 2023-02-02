@@ -1,11 +1,13 @@
 <?php 
     session_start();
     include '../backEnd/db.php';
-    $id = $_SESSION['user']['id'];
-    $sql_1 = 'SELECT * FROM user WHERE id = ?';
-    $stmt = $conn->prepare($sql_1);
-    $stmt->execute(array($id));
-    $user = $stmt->fetch();
+    $user = get_user($conn);
+
+    function get_user($conn){
+        $stmt = $conn->prepare('SELECT * FROM user WHERE id = ?');
+        $stmt->execute([$_SESSION['user']['id']]);
+        return $stmt->fetch();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +30,7 @@
     <?php include 'assets/include/header.php'?>
     <div class="flex">
         <img class="user_avatar1" src="<?php echo '../backEnd/' . $user['imagePath']?>" alt="">
-        <form class="form" action="../backEnd/updateUser.php" method="POST" enctype="multipart/form-data">
+        <form class="form" action="../backEnd/update_user.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="userName">Tên người dùng</label>
                 <input type="text" name='userName' class="form-control" id="userName" value="<?php echo $user['userName']; ?>" placeholder="Nhập tên người dùng">

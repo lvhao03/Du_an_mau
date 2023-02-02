@@ -1,20 +1,19 @@
 <?php 
     include './db.php';
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $b = $conn->prepare('SELECT * FROM catergory WHERE catergoryName = ?');
-        $b->setFetchMode(PDO::FETCH_ASSOC);
-        $b->execute([$_POST['catergoryName']]);
-        $catergoryID = $b->fetch();
-
-        $filePath = checkFile();
-
-        $sql = "INSERT INTO product(productName,price, des, catergoryID, imagePath) VALUES (?,?,?,?,?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array($_POST['productName'], $_POST['price'], $_POST['des'], $catergoryID['id'] ,$filePath));
-        // header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
+        $catergory_id = get_catergory_id($conn);
+        $image_path = check_file();
+        insert_product($conn, $image_path, $catergory_id);
+        header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
     }
     
-    function checkFile(){
+    function insert_product($conn, $image_path, $catergory_id){
+        $sql = "INSERT INTO product(productName,price, des, catergoryID, imagePath) VALUES (?,?,?,?,?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$_POST['productName'], $_POST['price'], $_POST['des'], $catergory_id, $image_path]);
+    }
+
+    function check_file(){
         $directory = 'upload/';
         $filePath = $directory . $_FILES['file']['name'];
         if (file_exists($filePath)){
@@ -28,14 +27,11 @@
         }
     }
 
-    function getCatergoryID(){
-        global $conn;
-        $b = $conn->prepare('SELECT * FROM catergory WHERE catergoryName = :name');
-        $b->bindParam(':name', $_POST['catergoryName']);
-        $b->setFetchMode(PDO::FETCH_ASSOC);
-        $b->execute();
-        $user = $b->fetch();
-        return $user['id'];
+    function get_catergory_id($conn){
+        $stmt = $conn->prepare('SELECT * FROM catergory WHERE catergoryName = ?');
+        $stmt->execute([ $_POST['catergoryName']]);
+        $catergory = $stmt->fetch();
+        return $catergory['id'];
     }
 
 ?>
@@ -52,11 +48,10 @@
         <select name='catergoryName' class="form-control" name="" id="">
             <?php
                 include './db.php';
-                $a = $conn->prepare('SELECT * FROM catergory');
-                $a->setFetchMode(PDO::FETCH_ASSOC);
-                $a->execute();
-                $catergory = $a->fetchAll();
-                foreach($catergory as $n){
+                $stmt = $conn->prepare('SELECT * FROM catergory');
+                $stmt->execute();
+                $catergory_list = $stmt->fetchAll();
+                foreach($catergory_list as $n){
                     echo '<option value="'.$n['catergoryName'].'">' . $n['catergoryName'].'</option>';
                 }
             ?>

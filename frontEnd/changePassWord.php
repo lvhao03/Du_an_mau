@@ -5,9 +5,7 @@
 <?php
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         include '../backEnd/db.php';
-        
-        $sql = 'SELECT * FROM user WHERE id = ? AND passWord = ?';
-        $stmt = $conn->prepare($sql);
+        $stmt = $conn->prepare('SELECT * FROM user WHERE id = ? AND passWord = ?');
         $stmt->execute([$_GET['id'], $_POST['oldpassWord']]);
         if ($stmt->rowCount() > 0) {
             $sucess = '<script> alert("Thanh cong"); </script>';

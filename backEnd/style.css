@@ -137,6 +137,7 @@ select, input {
     width: 150px;
     height: 150px;
     border-radius: 10px;
+    object-fit: cover;
 }
 
 label {
@@ -169,11 +170,15 @@ label {
     color: white;
     font-weight: 100;
     padding: 5px;
-
 }
 
 .order-detail {
     display: flex;
+    gap: 20px;
+}
+
+.middle {
+    max-width: 350px;
 }
 
 /* Trang index */

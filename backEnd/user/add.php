@@ -2,7 +2,7 @@
     include './db.php';
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         $stmt = $conn->prepare("INSERT INTO user(userName,email, passWord, userRole) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$_POST['userName'],$_POST['email']],$_POST['passWord'], $_POST['userRole']);
+        $stmt->execute([$_POST['userName'],$_POST['email'],$_POST['passWord'], $_POST['userRole']]);
         header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
     }
 ?>
@@ -23,7 +23,10 @@
     </div>
     <div class="form-group">
         <label for="formGroupExampleInput2">Vai trò</label>
-        <input type="text" required name="userRole"class="form-control" id="formGroupExampleInput2" placeholder="Nhập vai trò">
+        <select  class="form-control" id="" name="userRole">
+            <option value="admin">Admin</option>
+            <option value="khách hàng">Khách hàng</option>
+        </select>
     </div>
     <button type='submit' class="btn btn-primary">Thêm</button>
 </form>

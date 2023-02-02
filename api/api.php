@@ -10,6 +10,9 @@
         case 'show_comment':
             show_comment($_GET['id']);
             break;
+        case 'show_replied_comment':
+            show_replied_comment($_POST['comment_parent_id'],$_GET['id']);
+            break;
         case 'show_product_detail':
             show_product_detail();
             break;
@@ -47,6 +50,10 @@
 
     function live_search($keyWord){
         global $conn;
+        if ($keyWord == '') {
+            echo json_encode('');
+            return;
+        }
         $param = "%" .$keyWord."%";
         $sql = 'SELECT * FROM product WHERE productName like ? LIMIT 3';
         $stmt = $conn->prepare($sql);
@@ -57,9 +64,9 @@
     function send_comment(){
         global $conn;
         $date = date('d.m.Y');
-        $sql = 'INSERT INTO comment(content,userID, productID, date)  VALUES (?,?,?,?)';
+        $sql = 'INSERT INTO comment(content,userID, productID, parent_id, date)  VALUES (?,?,?,?,?)';
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$_POST['content'], $_SESSION['user']['id'], $_GET['id'], $date]);
+        $stmt->execute([$_POST['content'], $_SESSION['user']['id'], $_GET['id'], $_POST['parent_id'], $date]);
         show_comment($_GET['id']);
     }
 
@@ -93,11 +100,19 @@
         echo json_encode($html);
     }
 
-    function show_comment($id){
+    function show_comment($product_id){
         global $conn;
-        $sql = 'SELECT * FROM comment JOIN user ON comment.userID = user.id AND productID = ? ';
+        $sql = 'SELECT user.imagePath , user.userName , comment.date, comment.content, comment.id, comment.parent_id FROM comment JOIN user ON comment.userID = user.id WHERE productID = ? AND comment.parent_id <= 0 ';
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$id]);
+        $stmt->execute([$product_id]);
+        echo json_encode($stmt->fetchAll());
+    }
+
+    function show_replied_comment($comment_parent_id, $product_id){
+        global $conn;
+        $sql = 'SELECT user.imagePath , user.userName , comment.date, comment.content, comment.id,  comment.parent_id  FROM comment JOIN user ON comment.userID = user.id WHERE productID = ? AND comment.parent_id = ? ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$product_id, $comment_parent_id]);
         echo json_encode($stmt->fetchAll());
     }
 

@@ -1,6 +1,6 @@
 <?php 
     include './db.php';
-    $userList = $conn->query('SELECT * FROM user LIMIT 5')->fetchAll();
+    $user_list = $conn->query('SELECT * FROM user LIMIT 5')->fetchAll();
 ?>
 <h2>Danh sách người dùng</h2>
 <div class="select">
@@ -27,7 +27,7 @@
     </thead>
     <tbody>
         <?php 
-            foreach ($userList as $n){
+            foreach ($user_list as $n){
                 if ($n['userRole'] == 'admin') {
                     $td = '<td><span class="admin">'. $n['userRole'] .'</span></td>';
                 } else {
@@ -64,26 +64,7 @@
                 type: 'POST',
                 dataType: 'json',
                 success: function(result){
-                    let html = '';
-                    let td = '';
-                    $.each(result, (index , user) => {
-                        if (user['userRole'] == 'admin') {
-                            td = `<td><span class="admin">${user['userRole']}</span></td>`;
-                        } else {
-                            td = `<td><span class="user">${user['userRole']}</span></td>`;
-                        }
-                        html += ` <tr>
-                                    <th scope="row"> ${user['id']}</th>
-                                    <td>${user['userName']}</td>
-                                    <td>${user['email']}</td>
-                                    ${td}
-                                    <td>
-                                        <a href="./admin.php?page=user&action=edit&id=${user['id']}"><i class="fa-solid fa-pen-to-square"></i></a>
-                                        <a href="./admin.php?page=user&action=delete&id=${user['id']}"><i class="fa-solid fa-trash"></i></a>
-                                    </td>
-                                </tr>`;
-                    })
-                    tbody.html(html);
+                    renderUserSection(result);
                 }
             })
         })
@@ -101,29 +82,35 @@
                 type: 'POST',
                 dataType: 'json',
                 success: function(result){
-                    let html = '';
-                    $.each(result, (index , user) => {
-                        let td = '';
-                        if (user['userRole'] == 'admin') {
-                            td = `<td><span class="admin">${user['userRole']}</span></td>`;
-                        } else {
-                            td = `<td><span class="user">${user['userRole']} </span></td>`;
-                        }
-                        html += `<tr>
-                                    <th scope="row"> ${user['id']}</th>
-                                    <td>${user['userName']}</td>
-                                    <td>${user['email']}</td>
-                                    ${td}
-                                    <td>
-                                        <a href="./admin.php?page=user&action=edit&id=${user['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
-                                        <a href="./admin.php?page=user&action=delete&id=${user['id']}"><i class="fa-solid fa-trash"></i></a>
-                                    </td>
-                                </tr>`;
-                    })
-                    tbody.html(html);
+                    renderUserSection(result);
                 }
             })
         })
+
+        function renderUserSection(userList){
+            let html = '';
+            userList.forEach(user => {
+                let role = changeRoleBackGround(user['userRole']);
+                html += `<tr>
+                            <th scope="row"> ${user['id']}</th>
+                            <td>${user['userName']}</td>
+                            <td>${user['email']}</td>
+                            ${role}
+                            <td>
+                                <a href="./admin.php?page=user&action=edit&id=${user['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
+                                <a href="./admin.php?page=user&action=delete&id=${user['id']}"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>`;
+            });
+            tbody.html(html);
+        }
+        
+        function changeRoleBackGround(role){
+            if (role == 'admin') {
+                return `<td><span class="admin">${role}</span></td>`;
+            }
+            return `<td><span class="user">${role}</span></td>`;
+        }
     })
         
 </script>

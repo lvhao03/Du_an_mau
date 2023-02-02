@@ -249,15 +249,59 @@ h2 {
 
 .user-comment{
     display: flex;
+    flex-direction: column;
     gap: 20px;
-    align-items: center;
     margin-bottom: 15px;
+}
+
+.root-comment {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 15px;
+    padding-left: 15px;
+}
+
+.replied-comment {
+    display: flex;
+    flex-direction: column;
+}
+
+.replied-comment-form {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .user-comment img {
     width: 70px;
     height: 70px;
     border-radius: 50%;
+    object-fit: cover;
+}
+
+
+
+.user-comment-info {
+    box-shadow: 0 0 2px black;
+    padding: 5px 15px;
+    border-radius: 10px;
+    min-width: 350px;
+}
+
+.user-comment-info p {
+    margin-top: 8px;
+}
+
+.user-icon {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    color: #56B280;
+}
+
+.user-icon i:hover {
+    cursor: pointer;
 }
 
 .comment-content {
@@ -276,6 +320,17 @@ h2 {
     display: flex;
     gap: 10px;
     flex-direction: column;
+}
+
+.replied-comment .root-comment {
+    box-shadow: -2px 0 0 0 #56B280;
+    align-items: center;
+}
+
+.replied-comment-section {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: 48px;
 }
 /* Recommened section */
 .row {

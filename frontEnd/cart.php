@@ -37,9 +37,11 @@
                 </div>
                 <div class="left-content">
                     <?php 
-                        // print_r($_SESSION['cart']);
                         $sum = 0;
                         $index = 0;
+                        if (!isset($_SESSION['cart'])){
+                            echo '<h4>Chưa có giỏ hàng nào trong sản phẩm</h4>';
+                        } else {
                         foreach($_SESSION['cart'] as $product_detail){
                             if (!isset($_SESSION['cart'])) {
                                 continue;
@@ -69,7 +71,7 @@
                         </div>
                       <?php 
                             $index++;
-                            }
+                            }}
                         ?>
                 </div>
             </div>

@@ -13,20 +13,18 @@
     <tbody>
         <?php 
             include './db.php';
-            $sql = 'SELECT count(productID) as numberComment FROM comment GROUP BY productID';
-            $sql_2 = 'SELECT count(productID) as numberComment , product.id as product_id, product.productName, product.imagePath, comment.id FROM comment join product on comment.productID = product.id group by  productID';
-            $number = $conn->query($sql)->fetchAll();
-            $commentList = $conn->query($sql_2)->fetchAll();
-            foreach($commentList as $comment){
+            $sql = 'SELECT count(productID) as total_comment , product.id as product_id, product.productName, product.imagePath, comment.id as id FROM comment join product on comment.productID = product.id group by  productID';
+            $comment_list = $conn->query($sql)->fetchAll();
+            foreach($comment_list as $comment){
         ?>
-        <tr>
-            <th scope="row"><?php echo $comment['id']?></th>
-            <td><img src="<?php echo $comment['imagePath']?>" alt=""></td>
-            <td><?php echo $comment['productName']?></td>
-            <td><?php echo $comment['numberComment']?></td>
-            <td>
-                <a href="./admin.php?page=comment&action=show_detail&id=<?php echo $comment['product_id'] ?>"><i class="fa-solid fa-plus"></i></a>
-            </td>
-        </tr>
+                <tr>
+                    <th scope="row"><?php echo $comment['id']?></th>
+                    <td><img src="<?php echo $comment['imagePath']?>" alt=""></td>
+                    <td><?php echo $comment['productName']?></td>
+                    <td><?php echo $comment['total_comment']?></td>
+                    <td>
+                        <a href="./admin.php?page=comment&action=show_detail&id=<?php echo $comment['product_id'] ?>"><i class="fa-solid fa-plus"></i></a>
+                    </td>
+                </tr>
         <?php }?>
     </tbody>
