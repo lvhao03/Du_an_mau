@@ -51,7 +51,7 @@
     <!-- Banner -->
     <div class="banner">
         <div class="slider">
-            <img class='mainImage' src="https://img.freepik.com/premium-vector/summer-sale-green-white-background-professional-banner-multipurpose-design-free-vector_1340-20165.jpg?w=2000" alt="">
+            <img class='mainImage' src="https://cdn3.vectorstock.com/i/1000x1000/04/67/summer-sale-banner-template-background-vector-32420467.jpg" alt="">
             <div class="double-btn mobile-hide">
                 <button class="pre"><i class="fas fa-arrow-left"></i></button>
                 <button class="next"><i class="fas fa-arrow-right"></i></button>

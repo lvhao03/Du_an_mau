@@ -51,7 +51,7 @@
     <?php include 'assets/include/header.php'?>
     <!-- Banner -->
     <div class="banner">
-        <img src="https://img.freepik.com/premium-vector/summer-sale-green-white-background-professional-banner-multipurpose-design-free-vector_1340-20165.jpg?w=2000" alt="">
+        <img src="https://cdn3.vectorstock.com/i/1000x1000/04/67/summer-sale-banner-template-background-vector-32420467.jpg" alt="">
     </div>
 
     <div class="main">

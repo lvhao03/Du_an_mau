@@ -1,6 +1,9 @@
 <?php 
     session_start();
     $action = '';
+    if (!isset($_SESSION['user'])){
+        header('Location: http://localhost:8080/PHP_1/duAnMau/frontEnd/index.php');
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,7 +72,7 @@
                         Bình luận
                     </li>
                 </a>
-                <a href="./admin.php?page=stats&action=show">
+                <a href="./admin.php?page=chart&action=show">
                     <li>
                         <i class="fas fa-solid fa-chart-simple"></i>
                         Thống kê

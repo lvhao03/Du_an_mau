@@ -1,6 +1,8 @@
 <?php 
     session_start();
-    
+    if (isset($_GET['error'])){
+        $error = '<span class="red">Vui lòng chọn tên khác </span>';
+    }
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +31,7 @@
                 <label for="username">
                     <p>Tên tài khoản</p>
                     <input id='username'type="text" name='userName' required placeholder="Nhập tên tài khoản">
+                    <?php echo $error ?? '' ?>
                 </label>
                 <label for="email">
                     <p>Email</p>

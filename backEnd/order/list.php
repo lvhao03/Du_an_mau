@@ -1,6 +1,6 @@
 <?php 
     include './db.php';
-    $order_list = $conn->query('SELECT * FROM bill LIMIT 5')->fetchAll();
+    $order_list = $conn->query('SELECT * FROM bill ')->fetchAll();
 ?>
 <h2>Danh sách hóa đơn</h2>
 <div class="select">
@@ -114,40 +114,5 @@
             })
             tbody.html(html);
         }   
-        // let searchBar = $('.search');
-        // searchBar.keyup(function(){
-        //     $.ajax({
-        //         url: 'http://localhost:8080/PHP_1/duAnMau/api/api.php',
-        //         data: {
-        //             keyWord: searchBar.val(),
-        //             action: 'search_query',
-        //             tableName: "user"
-        //         },
-        //         type: 'POST',
-        //         dataType: 'json',
-        //         success: function(result){
-        //             let html = '';
-        //             $.each(result, (index , user) => {
-        //                 let td = '';
-        //                 if (user['userRole'] == 'admin') {
-        //                     td = `<td><span class="admin">${user['userRole']}</span></td>`;
-        //                 } else {
-        //                     td = `<td><span class="user">${user['userRole']} </span></td>`;
-        //                 }
-        //                 html += `<tr>
-        //                             <th scope="row"> ${user['id']}</th>
-        //                             <td>${user['userName']}</td>
-        //                             <td>${user['email']}</td>
-        //                             ${td}
-        //                             <td>
-        //                                 <a href="./admin.php?page=user&action=edit&id=${user['id']}"><i class="fa-solid fa-pen-to-square"></i></a> 
-        //                                 <a href="./admin.php?page=user&action=delete&id=${user['id']}"><i class="fa-solid fa-trash"></i></a>
-        //                             </td>
-        //                         </tr>`;
-        //             })
-        //             tbody.html(html);
-        //         }
-        //     })
-        // })
     })
 </script>

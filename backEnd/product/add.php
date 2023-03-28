@@ -8,23 +8,22 @@
     }
     
     function insert_product($conn, $image_path, $catergory_id){
+        $image_path = $image_path ?? 'upload/user_avatar_default.PNG';
         $sql = "INSERT INTO product(productName,price, des, catergoryID, imagePath) VALUES (?,?,?,?,?)";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$_POST['productName'], $_POST['price'], $_POST['des'], $catergory_id, $image_path]);
     }
 
     function check_file(){
+        if (!isset($_FILES['file']['name'])){
+            return null;
+        }
         $directory = 'upload/';
         $filePath = $directory . $_FILES['file']['name'];
-        if (file_exists($filePath)){
-            echo 'File da ton tai';
-        }
-    
         if (move_uploaded_file($_FILES['file']['tmp_name'], $filePath)){
             return $filePath;
-        } else {
-            echo 'upload thất bại';
-        }
+        } 
+        return null;
     }
 
     function get_catergory_id($conn){

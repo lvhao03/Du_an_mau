@@ -1,18 +1,16 @@
 <?php 
     include './db.php';
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-       update_user();
+       update_user($conn);
     } 
     
     $stmt = $conn->prepare('SELECT * FROM user WHERE id= ?');
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $stmt->execute([$_GET['id']]);
     $user = $stmt->fetch();
 
-    function update_user(){
-        global $conn;
-        $stmt = $conn->prepare('UPDATE user SET userName=?, email=?, passWord=?, userRole=? WHERE user.id= ?');
-        $stmt->execute([$_POST['userName'],$_POST['email'],$_POST['passWord'], $_POST['userRole'],$_GET['id']]);
+    function update_user($conn){
+        $stmt = $conn->prepare('UPDATE user SET userName=?, email=?, userRole=? WHERE user.id= ?');
+        $stmt->execute([$_POST['userName'],$_POST['email'], $_POST['userRole'],$_GET['id']]);
         header('Location: http://localhost:8080/PHP_1/duAnMau/backEnd/admin.php?page=user&action=show');
         die();
     }
@@ -26,10 +24,6 @@
     <div class="form-group">
         <label for="email">Email</label>
         <input type="text"name='email' class="form-control" id="email" value="<?php echo $user['email']; ?>" placeholder="Nhập email">
-    </div>
-    <div class="form-group">
-        <label for="passWord">Mật khẩu</label>
-        <input type="text" name='passWord' class="form-control" id="passWord" value="<?php echo $user['passWord']; ?>"  placeholder="Nhập mật khẩu">
     </div>
     <div class="form-group">
         <label for="role">Vai trò</label>

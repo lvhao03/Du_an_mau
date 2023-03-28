@@ -5,17 +5,27 @@
 <?php
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         include '../backEnd/db.php';
-        $stmt = $conn->prepare('SELECT * FROM user WHERE id = ? AND passWord = ?');
-        $stmt->execute([$_GET['id'], $_POST['oldpassWord']]);
-        if ($stmt->rowCount() > 0) {
+        $user = get_user($conn);
+        if (password_verify($_POST['old_pass'], $user['passWord'])){
+            update_user_pass($conn);
             $sucess = '<script> alert("Thanh cong"); </script>';
-            $sql_2 = 'UPDATE user SET passWord = ? WHERE id = ?';
-            $stmt_2 = $conn->prepare($sql_2);
-            $stmt_2->execute([$_POST['newpassWord'], $_GET['id']]);
         } else {
             $error = '<p class="red">Sai mật khẩu</p>';
         }
     }
+
+    function update_user_pass($conn){
+        $new_hash = password_hash($_POST['new_pass'], PASSWORD_BCRYPT);
+        $stmt = $conn->prepare('UPDATE user SET passWord = ? WHERE id = ?');
+        $stmt->execute([$new_hash, $_GET['id']]);
+    }
+
+    function get_user($conn){
+        $stmt = $conn->prepare('SELECT * FROM user WHERE id = ?');
+        $stmt->execute([$_GET['id']]);
+        return $stmt->fetch();
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,13 +52,13 @@
             <form action="#" method="POST">
                 <label for="email">
                     <p>Nhập mật khẩu cũ</p>
-                    <input id='email'type="password" name='oldpassWord' required placeholder="Nhập mật khẩu cũ">
+                    <input id='email'type="password" name='old_pass' required placeholder="Nhập mật khẩu cũ">
                     <?php  if (isset($error)) echo $error;?>
                     <?php  if (isset($sucess)) echo $sucess;?>
                 </label>
                 <label for="email">
                     <p>Nhập mật khẩu mới</p>
-                    <input id='email'type="password" name='newpassWord' required placeholder="Nhập mật khẩu mới">
+                    <input id='email'type="password" name='new_pass' required placeholder="Nhập mật khẩu mới">
                 </label>
                 <a href="">
                     <button type='submit' class="btn">Đổi</button>

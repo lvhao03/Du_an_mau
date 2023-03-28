@@ -200,5 +200,4 @@
         $sql = 'UPDATE bill SET status = ? WHERE id = ?';
         $stmt = $conn->prepare($sql);
         $stmt->execute([$status, $id]);
-
     }

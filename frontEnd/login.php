@@ -27,13 +27,15 @@
         return false;
     }
 
-
-    function get_user($user_name, $user_password){
+    function get_user($user_name, $user_enter_password){
         global $conn;
-        $stmt = $conn->prepare('SELECT * FROM user WHERE userName = ? AND passWord = ?');
-        $stmt->execute([$user_name,$user_password]);
+        $stmt = $conn->prepare('SELECT * FROM user WHERE userName = ?');
+        $stmt->execute([$user_name]);
         $user = $stmt->fetch();
-        return $user;
+        
+        if (password_verify($user_enter_password, $user['passWord'])){
+            return $user;
+        }
     }
 
 ?>

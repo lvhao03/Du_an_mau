@@ -6,7 +6,9 @@
 
 <?php 
     include './db.php';
-    $conn->prepare('SELECT * FROM bill');
+    $stmt = $conn->prepare('SELECT catergory.catergoryName, count(catergoryID) as "total_product_in_catergory" FROM product join catergory ON product.catergoryID = catergory.id GROUP BY catergoryID;');
+    $stmt->execute();
+    $product_list = $stmt->fetchAll();
 ?>
 
 <script>
@@ -15,16 +17,16 @@
 
     function drawChart() {
         var data = google.visualization.arrayToDataTable([
-        ['Quoc gia', 'Mhl'],
-        ['Italy',54.8],
-        ['France',48.6],
-        ['Spain',44.4],
-        ['USA',23.9],
-        ['Argentina',14.5]
-        ]);
+            ['Danh mục', 'Số lượng sản phẩm'],
+            <?php 
+                foreach($product_list as $product){
+            ?>  
+                [<?php echo '\'' .$product['catergoryName']. '\''?> , <?php echo $product['total_product_in_catergory']?> ],
+            <?php }?>
+            ]);
 
         var options = {
-        title:'Sản phẩm được mua nhiều nhất'
+        title:'Số lượng sản phẩm của từng danh mục'
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('myChart'));

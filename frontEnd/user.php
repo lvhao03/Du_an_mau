@@ -45,9 +45,6 @@
             </div>
             <button type='submit' class="btn btn-primary">Cập nhật</button>
         </form>
-        <a href="./changePassWord.php?id=<?php echo $user['id']?>">
-            <button class="btn btn-primary">Đổi mật khẩu</button>
-        </a>
     </div>
     <?php include 'assets/include/footer.php'?>
 

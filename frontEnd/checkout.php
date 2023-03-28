@@ -129,7 +129,6 @@
             })
         })
 
-
         function renderData(select, array){
             select.html('');
             let html = '<option disable value="">Chọn</option>';
